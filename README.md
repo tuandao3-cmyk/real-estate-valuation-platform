@@ -1,0 +1,3 @@
+# README
+
+*Document initialized automatically.*

@@ -1,0 +1,3 @@
+# GLOSSARY
+
+*Document initialized automatically.*
