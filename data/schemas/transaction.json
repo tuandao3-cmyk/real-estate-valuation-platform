@@ -1,1 +1,119 @@
-{}
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Transaction",
+    "description": "Canonical schema representing a completed or verified real estate transaction. Transaction data serves as a valuation anchor for AVM models. This schema contains NO valuation logic, NO prediction, NO risk decision, and NO approval authority. valuation_dossier.json remains the Single Source of Truth.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "transaction_id",
+        "property_id",
+        "transaction_type",
+        "transaction_price",
+        "currency",
+        "transaction_date_utc",
+        "verification_status",
+        "jurisdiction"
+    ],
+    "properties": {
+        "transaction_id": {
+            "type": "string",
+            "description": "Unique identifier of the transaction record."
+        },
+        "property_id": {
+            "type": "string",
+            "description": "Reference to the related property. No assumption of full comparability is made."
+        },
+        "transaction_type": {
+            "type": "string",
+            "enum": [
+                "SALE",
+                "TRANSFER",
+                "AUCTION",
+                "FORECLOSURE",
+                "OTHER"
+            ],
+            "description": "Declared transaction type."
+        },
+        "transaction_price": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Declared transaction price. This is a historical fact, not a valuation."
+        },
+        "currency": {
+            "type": "string",
+            "description": "Currency code of the transaction price (e.g., VND)."
+        },
+        "transaction_date_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp of the transaction execution or registration."
+        },
+        "verification_status": {
+            "type": "string",
+            "enum": [
+                "VERIFIED",
+                "PARTIALLY_VERIFIED",
+                "UNVERIFIED",
+                "DISPUTED"
+            ],
+            "description": "Verification status of the transaction. Verification logic is handled outside this schema."
+        },
+        "verification_source": {
+            "type": "string",
+            "description": "Declared source used to verify the transaction (e.g., notary, registry, bank record)."
+        },
+        "counterparty_type": {
+            "type": "string",
+            "enum": [
+                "INDIVIDUAL",
+                "ORGANIZATION",
+                "STATE",
+                "UNKNOWN"
+            ],
+            "description": "Declared counterparty category."
+        },
+        "transaction_conditions": {
+            "type": "object",
+            "description": "Declared special conditions that may affect comparability.",
+            "additionalProperties": false,
+            "properties": {
+                "related_party_transaction": {
+                    "type": "boolean",
+                    "description": "Whether the transaction is declared as related-party."
+                },
+                "distressed_sale": {
+                    "type": "boolean",
+                    "description": "Whether the transaction is declared as distressed."
+                },
+                "bundle_transaction": {
+                    "type": "boolean",
+                    "description": "Whether the transaction includes multiple assets."
+                }
+            }
+        },
+        "jurisdiction": {
+            "type": "string",
+            "description": "Legal jurisdiction governing the transaction (e.g., VN)."
+        },
+        "data_provenance": {
+            "type": "object",
+            "description": "Metadata describing how the transaction data was obtained.",
+            "additionalProperties": false,
+            "properties": {
+                "source_system": {
+                    "type": "string",
+                    "description": "System or registry from which transaction data was sourced."
+                },
+                "collected_at_utc": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "UTC timestamp when transaction data was collected."
+                },
+                "recorded_by": {
+                    "type": "string",
+                    "description": "Entity or role that recorded the transaction data."
+                }
+            }
+        }
+    }
+}

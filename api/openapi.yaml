@@ -1,1 +1,272 @@
 # YAML Config
+openapi: 3.0.3
+
+info:
+  title: Advanced AVM API
+  description: >
+    AI-assisted real estate valuation platform API.
+    This system assists valuation professionals by providing
+    standardized signals, reports, and audit artifacts.
+    Final valuation responsibility remains with human appraisers
+    and credit officers.
+  version: "1.0.0"
+  contact:
+    name: Governance & Risk Team
+  license:
+    name: Internal Use Only
+
+servers:
+  - url: /api
+    description: Internal API Gateway
+
+tags:
+  - name: Health
+    description: System health & readiness (non-decisive)
+  - name: Snapshot
+    description: Feature snapshot creation & retrieval
+  - name: Valuation
+    description: Valuation workflow orchestration (non-decisive)
+  - name: Reports
+    description: Valuation reports & audit artifacts (read-only)
+  - name: Admin
+    description: Governance & audit visibility (read-only)
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Health check
+      description: >
+        Returns basic service availability information.
+        This endpoint does not imply system approval or readiness
+        for valuation usage.
+      responses:
+        "200":
+          description: Service reachable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  metadata:
+                    $ref: "#/components/schemas/Metadata"
+
+  /snapshots:
+    post:
+      tags: [Snapshot]
+      summary: Create feature snapshot
+      description: >
+        Create an immutable feature snapshot for a valuation request.
+        Snapshot creation does not imply valuation approval.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeatureSnapshotRequest"
+      responses:
+        "201":
+          description: Snapshot created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  snapshot_id:
+                    type: string
+                  metadata:
+                    $ref: "#/components/schemas/Metadata"
+
+  /valuations:
+    post:
+      tags: [Valuation]
+      summary: Run valuation workflow
+      description: >
+        Execute valuation workflow using pre-approved models and rules.
+        Output is indicative and subject to human review.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ValuationRequest"
+      responses:
+        "200":
+          description: Valuation completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValuationResponse"
+
+  /reports:
+    get:
+      tags: [Reports]
+      summary: List reports
+      description: >
+        List existing valuation reports for review and audit purposes.
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Report list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  metadata:
+                    $ref: "#/components/schemas/Metadata"
+
+  /reports/valuation/{valuation_id}:
+    get:
+      tags: [Reports]
+      summary: Get valuation report
+      description: >
+        Retrieve a valuation report artifact.
+        Reports are immutable and non-decisive.
+      parameters:
+        - name: valuation_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Valuation report
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  report:
+                    type: object
+                  metadata:
+                    $ref: "#/components/schemas/Metadata"
+
+  /admin/system/status:
+    get:
+      tags: [Admin]
+      summary: System governance status
+      description: >
+        Retrieve high-level governance and audit readiness metadata.
+        This endpoint does not grant operational authority.
+      responses:
+        "200":
+          description: System status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: object
+                  metadata:
+                    $ref: "#/components/schemas/Metadata"
+
+components:
+  parameters:
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+
+    PageSize:
+      name: page_size
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+  schemas:
+    Metadata:
+      type: object
+      description: Request-level metadata for traceability.
+      properties:
+        request_id:
+          type: string
+          description: Unique request identifier
+        timestamp:
+          type: string
+          format: date-time
+
+    Pagination:
+      type: object
+      description: Pagination metadata.
+      properties:
+        page:
+          type: integer
+        page_size:
+          type: integer
+        total_items:
+          type: integer
+
+    FeatureSnapshotRequest:
+      type: object
+      description: Immutable feature snapshot request.
+      properties:
+        property_id:
+          type: string
+        raw_features:
+          type: object
+      required:
+        - property_id
+        - raw_features
+
+    ValuationRequest:
+      type: object
+      description: Valuation workflow request.
+      properties:
+        snapshot_id:
+          type: string
+        purpose:
+          type: string
+          description: Valuation purpose (e.g. credit, audit)
+      required:
+        - snapshot_id
+        - purpose
+
+    ValuationResponse:
+      type: object
+      description: >
+        Indicative valuation output.
+        Subject to human review and override.
+      properties:
+        valuation_id:
+          type: string
+        indicative_price:
+          type: number
+          format: float
+        confidence:
+          $ref: "#/components/schemas/Confidence"
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+
+    Confidence:
+      type: object
+      description: >
+        Descriptive confidence indicator.
+        Not a guarantee of accuracy or approval.
+      properties:
+        score:
+          type: number
+          format: float
+        band:
+          type: string
+          example: LOW

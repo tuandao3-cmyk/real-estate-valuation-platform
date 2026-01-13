@@ -1,1 +1,195 @@
-# YAML Config
+# local_bubble_burst.yaml
+
+---
+
+## 1. Mục đích tài liệu
+
+Tài liệu này mô tả **kịch bản stress test thị trường bất động sản nội địa – Local Bubble Burst** nhằm phục vụ:
+
+* Kiểm tra **độ ổn định và khả năng chịu đựng của hệ thống định giá (Advanced AVM – Hybrid AI + Thẩm định thủ công)**
+* Đánh giá rủi ro mô hình trong điều kiện **bong bóng giá BĐS cục bộ bị vỡ**
+* Cung cấp bằng chứng quản trị cho:
+
+  * Hội đồng phê duyệt model
+  * Kiểm toán nội bộ / kiểm toán độc lập
+  * Cơ quan thanh tra, giám sát
+
+Kịch bản này **không nhằm dự báo**, **không dùng để ra quyết định tín dụng**, và **không thay thế thẩm định viên**.
+
+---
+
+## 2. Phạm vi áp dụng
+
+* Áp dụng cho các mô hình định giá BĐS sử dụng trong:
+
+  * Cho vay thế chấp
+  * Đánh giá tài sản bảo đảm
+  * Due Diligence danh mục
+* Phạm vi địa lý:
+
+  * Thị trường nội địa
+  * Một hoặc nhiều khu vực có dấu hiệu bong bóng giá
+* Loại tài sản:
+
+  * Nhà ở đô thị
+  * Căn hộ chung cư
+  * Đất ở
+
+---
+
+## 3. Mô tả tổng quan kịch bản
+
+Kịch bản giả định một **chu kỳ bong bóng giá bất động sản mang tính cục bộ** hình thành trong giai đoạn tăng trưởng nóng, sau đó **vỡ bong bóng nhanh và mạnh** do sự kết hợp của các yếu tố:
+
+* Siết tín dụng đột ngột
+* Thanh khoản thị trường suy giảm
+* Tâm lý nhà đầu tư đảo chiều
+* Áp lực bán giải chấp gia tăng
+
+---
+
+## 4. Giả định vĩ mô
+
+* Tăng trưởng kinh tế chậm lại đáng kể
+* Lãi suất cho vay tăng nhanh trong thời gian ngắn
+* Chính sách tín dụng BĐS bị kiểm soát chặt
+* Dòng vốn đầu cơ rút khỏi thị trường địa phương
+
+Các giả định này được sử dụng **chỉ cho mục đích stress test mô hình**, không phản ánh dự báo chính thức.
+
+---
+
+## 5. Giả định thị trường bất động sản
+
+### 5.1 Diễn biến giá
+
+* Giá BĐS tại khu vực bong bóng giảm mạnh so với đỉnh:
+
+  * Giảm nhanh trong 6–12 tháng
+  * Mức giảm không đồng đều giữa các phân khúc
+* Biên độ giá giao dịch mở rộng, chênh lệch lớn giữa giá chào và giá khớp
+
+### 5.2 Thanh khoản
+
+* Số lượng giao dịch giảm sâu
+* Thời gian bán tài sản kéo dài bất thường
+* Giao dịch phát sinh chủ yếu từ bán bắt buộc / giải chấp
+
+---
+
+## 6. Giả định dữ liệu đầu vào
+
+* Dữ liệu giao dịch trở nên:
+
+  * Thưa thớt
+  * Biến động mạnh
+  * Có độ trễ cao
+* Tăng tỷ trọng dữ liệu ngoại lai (outliers)
+* Dữ liệu lịch sử gần nhất có nguy cơ **không còn đại diện cho giá trị thị trường hiện tại**
+
+---
+
+## 7. Tác động kỳ vọng lên hệ thống AVM
+
+### 7.1 Mô hình định lượng
+
+* Sai lệch định giá có xu hướng tăng
+* Độ ổn định mô hình suy giảm khi extrapolate ngoài vùng dữ liệu huấn luyện
+* Một số biến đầu vào mất ý nghĩa giải thích trong ngắn hạn
+
+### 7.2 Lớp Hybrid AI
+
+* Các thành phần AI chỉ đóng vai trò **tham khảo, phát hiện xu hướng bất thường**
+* AI không được phép:
+
+  * Điều chỉnh giá trị cuối cùng
+  * Ghi đè đánh giá của thẩm định viên
+
+---
+
+## 8. Vai trò thẩm định viên trong kịch bản stress
+
+* Thẩm định viên giữ vai trò quyết định cuối cùng
+* Yêu cầu tăng cường:
+
+  * Phân tích thị trường thực địa
+  * Soát xét giao dịch so sánh
+  * Điều chỉnh giả định giá thận trọng
+* AVM chỉ cung cấp:
+
+  * Cảnh báo rủi ro
+  * So sánh tương đối
+
+---
+
+## 9. Cơ chế kiểm soát và governance
+
+* Kích hoạt chế độ **Heightened Model Oversight**
+* Tăng tần suất rà soát kết quả định giá
+* Báo cáo stress test được trình:
+
+  * Bộ phận Quản trị rủi ro mô hình
+  * Hội đồng phê duyệt model (nếu vượt ngưỡng rủi ro)
+
+---
+
+## 10. Ngưỡng cảnh báo (conceptual)
+
+* Biến động giá vượt ngưỡng lịch sử
+* Sai lệch giữa AVM và thẩm định viên tăng mạnh
+* Tỷ lệ override của thẩm định viên gia tăng đáng kể
+
+Ngưỡng cụ thể được xác định theo chính sách nội bộ và không nêu trong tài liệu này.
+
+---
+
+## 11. Kết quả mong đợi của stress test
+
+* Không nhằm chứng minh mô hình “đúng”
+* Nhằm đánh giá:
+
+  * Mức độ suy giảm hiệu năng
+  * Khả năng kiểm soát rủi ro
+  * Tính đầy đủ của cơ chế governance
+
+---
+
+## 12. Giới hạn sử dụng
+
+* Không sử dụng kết quả stress test để:
+
+  * Ra quyết định tín dụng cá nhân
+  * Thay thế thẩm định giá chính thức
+* Chỉ dùng cho:
+
+  * Quản trị rủi ro mô hình
+  * Báo cáo nội bộ
+  * Kiểm toán và tuân thủ
+
+---
+
+## 13. Lưu vết và kiểm toán
+
+* Kịch bản stress test phải được:
+
+  * Phiên bản hóa
+  * Lưu trữ
+  * Gắn với kỳ đánh giá model cụ thể
+* Mọi kết quả phân tích phải có:
+
+  * Dấu vết phê duyệt
+  * Trách nhiệm rõ ràng
+
+---
+
+## 14. Kết luận
+
+Kịch bản **Local Bubble Burst** là một phần bắt buộc trong khung kiểm tra độ bền của hệ thống định giá bất động sản, nhằm đảm bảo:
+
+* AI được sử dụng có kiểm soát
+* Thẩm định viên giữ vai trò trung tâm
+* Ngân hàng đáp ứng yêu cầu quản trị rủi ro mô hình và tuân thủ
+
+---
+
+**End of Scenario Description**

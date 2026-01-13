@@ -1,0 +1,104 @@
+schema_version: "1.0.0"
+artifact_type: "rule_policy"
+risk_level: "NHÓM A"
+role: "Confidence Gate Policy (Rule-only)"
+
+description: >
+  Defines confidence thresholds used to route valuation cases
+  through approval workflows. This policy does not compute,
+  adjust, or infer confidence. It only evaluates precomputed
+  confidence values provided in valuation_dossier.json.
+
+scope:
+  applies_to: "valuation_dossier.confidence"
+  consumer: "Valuation Rule Engine"
+  decision_impact: "workflow_routing_only"
+
+inputs:
+  required:
+    - confidence_score
+    - confidence_band
+    - confidence_components
+  source: "valuation_dossier.json"
+  read_only: true
+
+confidence_bands:
+  HIGH:
+    range:
+      min: 0.80
+      max: 1.00
+    meaning: "High model agreement & strong data quality"
+
+  MEDIUM:
+    range:
+      min: 0.60
+      max: 0.79
+    meaning: "Acceptable agreement with some uncertainty"
+
+  LOW:
+    range:
+      min: 0.00
+      max: 0.59
+    meaning: "Low agreement or weak data quality"
+
+workflow_actions:
+  HIGH:
+    approval_required: false
+    routing:
+      - auto_continue
+    notes:
+      - "No mandatory human override"
+      - "Still subject to random audit sampling"
+
+  MEDIUM:
+    approval_required: true
+    routing:
+      - appraiser_review
+    notes:
+      - "Human appraiser must review"
+      - "Override allowed with justification"
+
+  LOW:
+    approval_required: true
+    routing:
+      - senior_appraiser_review
+      - credit_officer_review
+    notes:
+      - "Mandatory human decision"
+      - "System recommendation only"
+      - "High audit sensitivity"
+
+hard_stops:
+  - condition: "confidence_score is null"
+    action: "block_workflow"
+    reason: "Missing confidence score"
+
+  - condition: "confidence_components incomplete"
+    action: "block_workflow"
+    reason: "Non-reproducible confidence composition"
+
+explicit_prohibitions:
+  - must_not_compute_confidence
+  - must_not_modify_confidence
+  - must_not_adjust_price
+  - must_not_override_human_decision
+  - must_not_call_llm
+
+audit:
+  traceable: true
+  reproducible: true
+  policy_id_required: true
+  change_log_required: true
+
+governance:
+  owner: "Model Risk Management"
+  change_requires:
+    - version_bump
+    - written_rationale
+    - risk_assessment
+    - approval_committee_signoff
+
+notes:
+  - "Confidence is a gate, not a guarantee"
+  - "Low confidence escalates to humans, never forces output"
+  - "This policy supports defensible valuation, not automation"

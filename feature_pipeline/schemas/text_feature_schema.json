@@ -1,0 +1,118 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Text Feature Schema",
+    "description": "Canonical schema for text-derived features and signals. Governance-locked, non-decisive.",
+    "type": "object",
+    "required": [
+        "feature_id",
+        "feature_version",
+        "schema_version",
+        "owner_role",
+        "feature_type",
+        "text_metadata",
+        "signals",
+        "created_at_utc"
+    ],
+    "properties": {
+        "feature_id": {
+            "type": "string",
+            "description": "Globally unique text feature identifier"
+        },
+        "feature_version": {
+            "type": "string",
+            "description": "Immutable feature version identifier"
+        },
+        "schema_version": {
+            "type": "string",
+            "description": "Version of this text feature schema"
+        },
+        "owner_role": {
+            "type": "string",
+            "description": "Governance owner role (e.g. DATA_ENGINEERING, TRUST_INTELLIGENCE, RISK)"
+        },
+        "feature_type": {
+            "type": "string",
+            "enum": [
+                "TEXT"
+            ],
+            "description": "Feature modality (fixed to TEXT)"
+        },
+        "text_metadata": {
+            "type": "object",
+            "required": [
+                "source_field",
+                "content_hash"
+            ],
+            "properties": {
+                "source_field": {
+                    "type": "string",
+                    "description": "Origin field of the text (e.g. title, description, legal_note)"
+                },
+                "content_hash": {
+                    "type": "string",
+                    "description": "Deterministic hash of raw text content"
+                },
+                "language": {
+                    "type": "string",
+                    "description": "Declared or detected language code (ISO-639-1, descriptive only)"
+                },
+                "length_chars": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Character length of the text"
+                }
+            },
+            "additionalProperties": false
+        },
+        "signals": {
+            "type": "array",
+            "minItems": 0,
+            "description": "List of text-derived signals (descriptive only)",
+            "items": {
+                "type": "object",
+                "required": [
+                    "signal_type",
+                    "signal_hash"
+                ],
+                "properties": {
+                    "signal_type": {
+                        "type": "string",
+                        "description": "Type of text signal (e.g. CLICKBAIT, MISLEADING_CLAIM, REDUNDANCY)"
+                    },
+                    "signal_value": {
+                        "type": [
+                            "string",
+                            "number",
+                            "boolean"
+                        ],
+                        "description": "Descriptive signal output (non-decisive)"
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": [
+                            "LOW",
+                            "MEDIUM",
+                            "HIGH"
+                        ],
+                        "description": "Descriptive severity hint (no workflow authority)"
+                    },
+                    "signal_hash": {
+                        "type": "string",
+                        "description": "Deterministic hash of the signal payload"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "created_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Schema creation timestamp (UTC, ISO-8601)"
+        },
+        "governance_notes": {
+            "type": "string",
+            "description": "Optional audit or governance notes"
+        }
+    },
+    "additionalProperties": false
+}

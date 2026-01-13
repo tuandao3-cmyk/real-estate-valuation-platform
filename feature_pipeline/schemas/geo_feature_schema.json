@@ -1,0 +1,133 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Geo Feature Schema",
+    "description": "Canonical schema for geo-derived features and spatial signals. Governance-locked, non-decisive.",
+    "type": "object",
+    "required": [
+        "feature_id",
+        "feature_version",
+        "schema_version",
+        "owner_role",
+        "feature_type",
+        "geo_metadata",
+        "signals",
+        "created_at_utc"
+    ],
+    "properties": {
+        "feature_id": {
+            "type": "string",
+            "description": "Globally unique geo feature identifier"
+        },
+        "feature_version": {
+            "type": "string",
+            "description": "Immutable geo feature version"
+        },
+        "schema_version": {
+            "type": "string",
+            "description": "Version of this geo feature schema"
+        },
+        "owner_role": {
+            "type": "string",
+            "description": "Governance owner role (e.g. DATA_ENGINEERING, GEO_INTELLIGENCE)"
+        },
+        "feature_type": {
+            "type": "string",
+            "enum": [
+                "GEO"
+            ],
+            "description": "Feature modality (fixed to GEO)"
+        },
+        "geo_metadata": {
+            "type": "object",
+            "required": [
+                "latitude",
+                "longitude",
+                "location_hash"
+            ],
+            "properties": {
+                "latitude": {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90,
+                    "description": "Latitude in WGS84"
+                },
+                "longitude": {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180,
+                    "description": "Longitude in WGS84"
+                },
+                "coordinate_source": {
+                    "type": "string",
+                    "description": "Source of coordinates (e.g. GEOCODED, DECLARED, EXIF)"
+                },
+                "geo_confidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Descriptive confidence hint of coordinate reliability"
+                },
+                "location_hash": {
+                    "type": "string",
+                    "description": "Deterministic hash of normalized geo coordinates"
+                }
+            },
+            "additionalProperties": false
+        },
+        "signals": {
+            "type": "array",
+            "minItems": 0,
+            "description": "Geo-related descriptive signals",
+            "items": {
+                "type": "object",
+                "required": [
+                    "signal_type",
+                    "signal_hash"
+                ],
+                "properties": {
+                    "signal_type": {
+                        "type": "string",
+                        "description": "Type of geo signal (e.g. GEO_CONSISTENCY, LOCATION_MISMATCH)"
+                    },
+                    "signal_value": {
+                        "type": [
+                            "string",
+                            "number",
+                            "boolean"
+                        ],
+                        "description": "Descriptive signal output (non-decisive)"
+                    },
+                    "distance_meters": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "Distance delta if applicable (descriptive only)"
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": [
+                            "LOW",
+                            "MEDIUM",
+                            "HIGH"
+                        ],
+                        "description": "Descriptive severity level (no workflow authority)"
+                    },
+                    "signal_hash": {
+                        "type": "string",
+                        "description": "Deterministic hash of signal payload"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "created_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Schema creation timestamp (UTC, ISO-8601)"
+        },
+        "governance_notes": {
+            "type": "string",
+            "description": "Optional governance or audit notes"
+        }
+    },
+    "additionalProperties": false
+}

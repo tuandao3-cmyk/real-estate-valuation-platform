@@ -1,0 +1,118 @@
+# model/cost_approach/construction_cost_table.yaml
+# =================================================
+# GOVERNANCE CLASS: NHÓM A – COST REFERENCE DATA
+# ROLE: Static Construction Cost Reference (Cost Approach)
+# AUTHORITY: NON-DECISIVE / HUMAN-VALIDATED
+# =================================================
+
+metadata:
+  table_id: construction_cost_reference_v1
+  version: "1.0.0"
+  effective_date: "2025-01-01"
+  currency: VND
+  unit: VND_per_m2
+  source_type: reference_only
+  governance:
+    immutable: true
+    audit_required: true
+    human_validation_required: true
+    auto_adjustment_forbidden: true
+    valuation_authority: false
+  disclaimer: >
+    This table provides descriptive construction cost references only.
+    Values do NOT represent market value, appraisal outcome, or approval decision.
+    Final valuation must be reviewed and confirmed by a licensed human appraiser.
+
+structure_categories:
+  residential:
+    description: Residential buildings
+    grades:
+      basic:
+        description: Basic finishing, minimal amenities
+        cost_range:
+          min: 3500000
+          max: 4500000
+      standard:
+        description: Standard finishing, common materials
+        cost_range:
+          min: 5000000
+          max: 6500000
+      high:
+        description: High-quality finishing, premium materials
+        cost_range:
+          min: 7000000
+          max: 9000000
+
+  townhouse:
+    description: Urban townhouse / row house
+    grades:
+      standard:
+        description: Reinforced concrete, standard interior
+        cost_range:
+          min: 6000000
+          max: 8000000
+      high:
+        description: Enhanced facade, upgraded interior
+        cost_range:
+          min: 8500000
+          max: 11000000
+
+  villa:
+    description: Detached villa / luxury residence
+    grades:
+      standard:
+        description: Large floor area, landscaped yard
+        cost_range:
+          min: 9000000
+          max: 12000000
+      luxury:
+        description: High-end architecture, premium construction
+        cost_range:
+          min: 13000000
+          max: 18000000
+
+  apartment:
+    description: Multi-story apartment building
+    grades:
+      standard:
+        description: Standard apartment specification
+        cost_range:
+          min: 7000000
+          max: 9000000
+      serviced:
+        description: Serviced apartment with higher MEP standard
+        cost_range:
+          min: 9500000
+          max: 12000000
+
+adjustment_policy:
+  allowed:
+    - inflation_index_reference
+    - regional_cost_multiplier_reference
+  forbidden:
+    - market_price_alignment
+    - demand_supply_adjustment
+    - automated_cost_optimization
+  note: >
+    Any adjustment must be explicitly documented, versioned,
+    and approved by human appraiser. No automatic adjustment is permitted.
+
+validation_rules:
+  - rule: cost_range_min_less_than_max
+    enforcement: hard_fail
+  - rule: currency_must_be_declared
+    enforcement: hard_fail
+  - rule: grade_must_have_description
+    enforcement: hard_fail
+
+audit:
+  change_log_required: true
+  version_bump_required_on_change: true
+  traceability:
+    table_hash: required
+    approver_identity: required
+    approval_date: required
+
+legal_notice: >
+  Absence of this table does not invalidate valuation.
+  Misuse of this table as final valuation constitutes governance violation.

@@ -1,1 +1,153 @@
-{}
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "LegalStatus",
+    "description": "Canonical schema representing declared legal status facts of a real estate asset. This schema captures legal declarations and document availability only. It does NOT perform legal judgment, validation, valuation, or decision-making. valuation_dossier.json remains the Single Source of Truth.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "property_id",
+        "ownership",
+        "land_use_rights",
+        "planning_status",
+        "jurisdiction"
+    ],
+    "properties": {
+        "property_id": {
+            "type": "string",
+            "description": "Identifier linking this legal status record to a property. No inference is made at this layer."
+        },
+        "ownership": {
+            "type": "object",
+            "description": "Declared ownership information based on provided documents or statements.",
+            "additionalProperties": false,
+            "required": [
+                "ownership_type"
+            ],
+            "properties": {
+                "ownership_type": {
+                    "type": "string",
+                    "enum": [
+                        "INDIVIDUAL",
+                        "HOUSEHOLD",
+                        "ORGANIZATION",
+                        "STATE",
+                        "OTHER"
+                    ],
+                    "description": "Declared form of ownership."
+                },
+                "owner_count": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Declared number of owners, if known."
+                },
+                "ownership_dispute_declared": {
+                    "type": "boolean",
+                    "description": "Whether any ownership dispute is declared at the time of data collection."
+                }
+            }
+        },
+        "land_use_rights": {
+            "type": "object",
+            "description": "Declared land use right information. No legal validation is performed.",
+            "additionalProperties": false,
+            "required": [
+                "certificate_status"
+            ],
+            "properties": {
+                "certificate_status": {
+                    "type": "string",
+                    "enum": [
+                        "CERTIFICATE_AVAILABLE",
+                        "CERTIFICATE_PENDING",
+                        "NO_CERTIFICATE",
+                        "UNKNOWN"
+                    ],
+                    "description": "Declared status of land use right certificate."
+                },
+                "certificate_number": {
+                    "type": "string",
+                    "description": "Declared certificate number, if available."
+                },
+                "land_use_term": {
+                    "type": "string",
+                    "enum": [
+                        "LONG_TERM",
+                        "FIXED_TERM",
+                        "UNKNOWN"
+                    ],
+                    "description": "Declared land use term."
+                }
+            }
+        },
+        "planning_status": {
+            "type": "object",
+            "description": "Declared planning and zoning information. This is NOT a planning opinion.",
+            "additionalProperties": false,
+            "required": [
+                "planning_condition"
+            ],
+            "properties": {
+                "planning_condition": {
+                    "type": "string",
+                    "enum": [
+                        "STABLE",
+                        "PLANNING_RISK",
+                        "PLANNING_FREEZE",
+                        "UNKNOWN"
+                    ],
+                    "description": "Declared planning condition affecting the property."
+                },
+                "declared_restrictions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of declared planning or construction restrictions, if any."
+                }
+            }
+        },
+        "encumbrances": {
+            "type": "object",
+            "description": "Declared encumbrance information, without legal verification.",
+            "additionalProperties": false,
+            "properties": {
+                "mortgage_declared": {
+                    "type": "boolean"
+                },
+                "lien_declared": {
+                    "type": "boolean"
+                },
+                "other_encumbrances": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "jurisdiction": {
+            "type": "string",
+            "description": "Legal jurisdiction governing this legal status (e.g., VN)."
+        },
+        "data_provenance": {
+            "type": "object",
+            "description": "Metadata describing the origin and collection context of legal information.",
+            "additionalProperties": false,
+            "properties": {
+                "source_system": {
+                    "type": "string",
+                    "description": "System or channel from which legal data was obtained."
+                },
+                "declared_by": {
+                    "type": "string",
+                    "description": "Entity declaring the legal information (e.g., owner, agent)."
+                },
+                "collected_at_utc": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "UTC timestamp when legal data was collected."
+                }
+            }
+        }
+    }
+}

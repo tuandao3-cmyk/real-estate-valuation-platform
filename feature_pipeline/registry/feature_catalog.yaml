@@ -1,0 +1,212 @@
+# ============================================================
+# FEATURE CATALOG – GOVERNANCE REGISTRY
+# File: feature_pipeline/registry/feature_catalog.yaml
+#
+# Role:
+#   Canonical registry of all engineered features in the system.
+#
+# Governance Level:
+#   NHÓM A – Model Governance / Audit Critical
+#
+# IMPORTANT:
+# - This file is DESCRIPTIVE ONLY
+# - It does NOT compute features
+# - It does NOT assign weights
+# - It does NOT influence decisions directly
+# - It does NOT override valuation_dossier.json
+#
+# MASTER_SPEC COMPLIANCE:
+# - Feature ≠ Decision
+# - Feature ≠ Price
+# - Feature ≠ Rule
+# ============================================================
+
+catalog_version: "1.0.0"
+last_updated_utc: "2026-01-09T00:00:00Z"
+
+governance:
+  owner: "Feature Governance Committee"
+  approval_required: true
+  change_policy: "Version bump + written rationale + risk assessment"
+  immutable_history: true
+
+global_constraints:
+  feature_scope:
+    - "Feature outputs are read-only signals"
+    - "Features may be used by models, never by rule engine directly"
+    - "Features must be traceable to valuation_dossier snapshot"
+  forbidden_actions:
+    - "Derive price"
+    - "Modify confidence score"
+    - "Trigger approval or rejection"
+    - "Override human judgment"
+
+# ============================================================
+# FEATURE DEFINITIONS
+# ============================================================
+
+features:
+  # ------------------------------------------------------------
+  # LISTING & DATA QUALITY FEATURES
+  # ------------------------------------------------------------
+
+  address_normalization_hash:
+    feature_id: "FTR_ADDR_001"
+    domain: "data_cleaning"
+    description: "Deterministic hash of normalized address"
+    input_sources:
+      - raw_address_fields
+    output_type: "string"
+    sensitivity: "LOW"
+    used_by_models:
+      - "geo_clustering_model"
+    limitations:
+      - "Does not validate legal address existence"
+    audit:
+      traceable: true
+      reproducible: true
+
+  geocode_confidence:
+    feature_id: "FTR_GEO_001"
+    domain: "data_cleaning"
+    description: "Confidence score returned by geocoding provider"
+    input_sources:
+      - normalized_address
+    output_type: "float"
+    range: [0.0, 1.0]
+    sensitivity: "MEDIUM"
+    used_by_models:
+      - "geo_clustering_model"
+    limitations:
+      - "Provider-dependent accuracy"
+    audit:
+      traceable: true
+      reproducible: true
+
+  data_completeness_ratio:
+    feature_id: "FTR_DATA_001"
+    domain: "data_quality"
+    description: "Ratio of populated required fields"
+    input_sources:
+      - dataset_schema
+      - dataset_values
+    output_type: "float"
+    range: [0.0, 1.0]
+    sensitivity: "MEDIUM"
+    used_by_models:
+      - "confidence_estimator"
+    limitations:
+      - "Measures presence, not correctness"
+    audit:
+      traceable: true
+      reproducible: true
+
+  # ------------------------------------------------------------
+  # LISTING TRUST & INTEGRITY FEATURES
+  # ------------------------------------------------------------
+
+  listing_trust_feature_vector:
+    feature_id: "FTR_TRUST_001"
+    domain: "listing_trust"
+    description: "Aggregated trust-related descriptive features"
+    input_sources:
+      - image_forensics_signals
+      - content_analysis_signals
+      - verification_signals
+    output_type: "vector"
+    sensitivity: "MEDIUM"
+    used_by_models:
+      - "listing_trust_model"
+    limitations:
+      - "Not a decision variable"
+      - "Not a fraud determination"
+    audit:
+      traceable: true
+      reproducible: true
+
+  image_condition_score:
+    feature_id: "FTR_IMG_001"
+    domain: "image_analysis"
+    description: "Estimated physical condition indicator from images"
+    input_sources:
+      - property_images
+    output_type: "float"
+    range: [0.0, 1.0]
+    sensitivity: "HIGH"
+    used_by_models:
+      - "hedonic_pricing_model"
+      - "cost_approach_model"
+    limitations:
+      - "Image quality dependent"
+      - "Cannot replace physical inspection"
+    audit:
+      traceable: true
+      reproducible: true
+
+  # ------------------------------------------------------------
+  # TEXT & SEMANTIC FEATURES
+  # ------------------------------------------------------------
+
+  text_embedding_vector:
+    feature_id: "FTR_TEXT_001"
+    domain: "text_processing"
+    description: "Semantic embedding of listing description"
+    input_sources:
+      - listing_text
+    output_type: "vector"
+    sensitivity: "MEDIUM"
+    used_by_models:
+      - "comparable_sales_model"
+      - "duplicate_listing_detector"
+    limitations:
+      - "Language and context dependent"
+    audit:
+      traceable: true
+      reproducible: true
+
+  # ------------------------------------------------------------
+  # GEO & MARKET FEATURES
+  # ------------------------------------------------------------
+
+  micro_market_cluster_id:
+    feature_id: "FTR_GEO_002"
+    domain: "geo_analysis"
+    description: "Cluster identifier for micro-market segmentation"
+    input_sources:
+      - latitude
+      - longitude
+    output_type: "string"
+    sensitivity: "HIGH"
+    used_by_models:
+      - "cluster_price_model"
+      - "hedonic_pricing_model"
+    limitations:
+      - "Cluster stability depends on historical data"
+    audit:
+      traceable: true
+      reproducible: true
+
+  # ------------------------------------------------------------
+  # DRIFT & STABILITY FEATURES
+  # ------------------------------------------------------------
+
+  feature_drift_flag:
+    feature_id: "FTR_DRIFT_001"
+    domain: "model_monitoring"
+    description: "Population stability indicator for feature distributions"
+    input_sources:
+      - historical_feature_distribution
+      - current_feature_distribution
+    output_type: "boolean"
+    sensitivity: "HIGH"
+    used_by_models:
+      - "model_governance_monitor"
+    limitations:
+      - "Signal only, no automatic retraining"
+    audit:
+      traceable: true
+      reproducible: true
+# ============================================================
+# END OF FEATURE CATALOG
+# Any modification requires governance approval.
+# ============================================================

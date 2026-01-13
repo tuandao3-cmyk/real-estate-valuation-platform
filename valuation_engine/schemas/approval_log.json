@@ -1,0 +1,145 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/schemas/approval_log.json",
+    "title": "ApprovalLog",
+    "description": "Immutable maker-checker approval log for valuation decisions. Records human approvals, overrides, and signatures. This schema is an audit artifact only and does not influence valuation computation.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "approval_id",
+        "dossier_reference",
+        "decision_reference",
+        "approval_flow",
+        "final_approval_status",
+        "audit"
+    ],
+    "properties": {
+        "approval_id": {
+            "type": "string",
+            "description": "Unique identifier for this approval log."
+        },
+        "dossier_reference": {
+            "type": "object",
+            "description": "Reference to the canonical valuation dossier.",
+            "additionalProperties": false,
+            "required": [
+                "dossier_id",
+                "valuation_hash"
+            ],
+            "properties": {
+                "dossier_id": {
+                    "type": "string"
+                },
+                "valuation_hash": {
+                    "type": "string"
+                }
+            }
+        },
+        "decision_reference": {
+            "type": "object",
+            "description": "Reference to the decision result derived from the dossier.",
+            "additionalProperties": false,
+            "required": [
+                "decision_id",
+                "decision_hash"
+            ],
+            "properties": {
+                "decision_id": {
+                    "type": "string"
+                },
+                "decision_hash": {
+                    "type": "string"
+                }
+            }
+        },
+        "approval_flow": {
+            "type": "array",
+            "description": "Ordered maker-checker approval steps.",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                    "step",
+                    "actor",
+                    "action",
+                    "acted_at"
+                ],
+                "properties": {
+                    "step": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "description": "Sequential approval step number."
+                    },
+                    "actor": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "actor_id",
+                            "role"
+                        ],
+                        "properties": {
+                            "actor_id": {
+                                "type": "string"
+                            },
+                            "role": {
+                                "type": "string",
+                                "description": "Human role (e.g., Appraiser, Credit Officer, Manager)."
+                            }
+                        }
+                    },
+                    "action": {
+                        "type": "string",
+                        "enum": [
+                            "approved",
+                            "rejected",
+                            "override"
+                        ],
+                        "description": "Approval action taken by the actor."
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "Optional justification or note from the approver."
+                    },
+                    "acted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp of the approval action."
+                    }
+                }
+            }
+        },
+        "final_approval_status": {
+            "type": "string",
+            "enum": [
+                "approved",
+                "rejected"
+            ],
+            "description": "Final approval outcome after completing maker-checker flow."
+        },
+        "audit": {
+            "type": "object",
+            "description": "Audit and integrity metadata.",
+            "additionalProperties": false,
+            "required": [
+                "trace_id",
+                "approval_hash",
+                "schema_version"
+            ],
+            "properties": {
+                "trace_id": {
+                    "type": "string",
+                    "description": "Trace identifier linking approval to valuation workflow."
+                },
+                "approval_hash": {
+                    "type": "string",
+                    "description": "Hash of the approval log for immutability verification."
+                },
+                "schema_version": {
+                    "type": "string",
+                    "description": "Version of the approval_log schema."
+                }
+            }
+        }
+    }
+}

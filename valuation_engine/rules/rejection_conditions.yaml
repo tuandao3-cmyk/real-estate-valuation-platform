@@ -1,0 +1,133 @@
+policy_id: VALUATION_REJECTION_CONDITIONS_V1
+schema_version: "1.0.0"
+status: ACTIVE
+
+description: >
+  Defines mandatory rejection conditions that immediately
+  block valuation acceptance due to missing artifacts,
+  integrity violations, or governance breaches.
+
+# -------------------------------------------------
+# INPUT CONTRACT (READ-ONLY)
+# -------------------------------------------------
+inputs:
+  valuation_dossier:
+    required: true
+    read_only: true
+
+  decision_result:
+    required: false
+    read_only: true
+
+  approval_log:
+    required: false
+    read_only: true
+
+# -------------------------------------------------
+# HARD REJECTION CONDITIONS
+# -------------------------------------------------
+rejection_conditions:
+  missing_dossier:
+    description: Valuation dossier is mandatory
+    condition: valuation_dossier.exists == false
+    reject_reason: MISSING_VALUATION_DOSSIER
+
+  dossier_integrity_violation:
+    description: Dossier hash or snapshot integrity is invalid
+    condition:
+      - valuation_dossier.immutable != true
+      - valuation_dossier.valuation_hash_invalid == true
+    reject_reason: DOSSIER_INTEGRITY_VIOLATION
+
+  orphan_decision:
+    description: Decision exists without valid dossier reference
+    condition:
+      - decision_result.exists == true
+      - decision_result.references_valuation_hash != true
+    reject_reason: ORPHAN_DECISION_RESULT
+
+  missing_human_approval:
+    description: Human approval is mandatory before acceptance
+    condition:
+      - approval_log.exists != true
+    reject_reason: MISSING_APPROVAL_LOG
+
+  invalid_approval_signature:
+    description: Approval log lacks valid human signatures
+    condition:
+      - approval_log.exists == true
+      - approval_log.human_signatures < 1
+    reject_reason: INVALID_APPROVAL_SIGNATURE
+
+  governance_breach:
+    description: Artifact violates separation-of-duties rules
+    condition:
+      - approval_log.generated_by in [AI, RULE_ENGINE]
+    reject_reason: GOVERNANCE_BREACH
+
+# -------------------------------------------------
+# REJECTION OUTCOME (WORKFLOW ONLY)
+# -------------------------------------------------
+outputs:
+  rejected:
+    type: boolean
+    value: true
+
+  rejection_code:
+    type: string
+    description: >
+      Canonical rejection reason code.
+      Must match one of the defined reject_reason values.
+
+  rejection_scope:
+    enum:
+      - WORKFLOW_BLOCK
+      - EXTERNAL_EXPOSURE_BLOCK
+    description: >
+      Indicates where the valuation is blocked.
+
+# -------------------------------------------------
+# EXPLICIT PROHIBITIONS
+# -------------------------------------------------
+prohibitions:
+  - must_not_compute_price
+  - must_not_apply_confidence_rules
+  - must_not_apply_risk_rules
+  - must_not_create_decision
+  - must_not_override_human_decision
+  - must_not_modify_any_artifact
+  - must_not_invoke_ml_or_llm
+
+# -------------------------------------------------
+# AUDIT & GOVERNANCE
+# -------------------------------------------------
+audit:
+  trace_id: REQUIRED
+  valuation_hash: REQUIRED
+  decision_hash: OPTIONAL
+  approval_hash: OPTIONAL
+  reproducible: true
+  versioned_policy: true
+  change_log_required: true
+
+# -------------------------------------------------
+# RELATIONSHIP TO OTHER ARTIFACTS
+# -------------------------------------------------
+relationships:
+  valuation_dossier.json: "Single Source of Truth"
+  decision_result.json: "Projection (optional)"
+  approval_log.json: "Human authority record"
+  valuation_acceptance.yaml: "Acceptance gate (post-rejection)"
+  confidence_threshold.yaml: "Upstream routing only"
+  risk_band_rules.yaml: "Upstream routing only"
+
+# -------------------------------------------------
+# INTERPRETATION RULE
+# -------------------------------------------------
+interpretation:
+  precedence: HIGHEST
+  rule: >
+    If ANY rejection condition is met,
+    valuation MUST be blocked immediately,
+    regardless of confidence, risk band,
+    or decision projection.

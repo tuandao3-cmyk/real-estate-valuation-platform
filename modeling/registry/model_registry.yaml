@@ -1,0 +1,173 @@
+# ============================================================
+# MODEL REGISTRY – ADVANCED AVM
+# File: modeling/registry/model_registry.yaml
+#
+# LEGAL STATUS:
+# - This file is a GOVERNANCE ARTIFACT
+# - Acts as the ONLY whitelist of permissible models
+# - Any model NOT declared here is INVALID by definition
+#
+# MASTER_SPEC COMPLIANCE:
+# - No auto-discovery
+# - No implicit activation
+# - No default models
+# - Valuation_dossier.json overrides all conflicts
+# ============================================================
+
+registry_version: "1.0.0"
+last_updated: "2026-01-11"
+owner: "Model Risk Management (MRM)"
+approval_required: true
+
+# ------------------------------------------------------------
+# GLOBAL CONSTRAINTS (NON-NEGOTIABLE)
+# ------------------------------------------------------------
+global_constraints:
+  allow_auto_registration: false
+  allow_self_activation: false
+  allow_runtime_model_swap: false
+  allow_hidden_versions: false
+
+# ------------------------------------------------------------
+# MODEL DEFINITIONS (WHITELIST)
+# ------------------------------------------------------------
+models:
+  # ==========================================================
+  # HEDONIC PRICING MODEL
+  # ==========================================================
+  - model_id: "hedonic_tabular_v1"
+    model_family: "hedonic"
+    description: "Tabular hedonic regression model for residential properties"
+    version: "1.0.0"
+    status: "validated" # draft | validated | active | retired
+
+    business_role:
+      allowed:
+        - "produce_price_estimate"
+      forbidden:
+        - "final_decision"
+        - "risk_override"
+        - "confidence_adjustment"
+
+    artifact:
+      storage_type: "immutable_object_store"
+      path: "models/hedonic/hedonic_tabular_v1/"
+      artifact_hash: "sha256:REPLACE_WITH_REAL_HASH"
+
+    schemas:
+      input_schema_ref: "feature_pipeline/schemas/tabular_schema.json"
+      output_schema_ref: "modeling/schemas/price_output_schema.json"
+
+    explainability:
+      level: "medium" # none | low | medium | high
+      method: "feature_attribution"
+
+    training_metadata:
+      data_source: "historical_transactions_vn"
+      training_period: "2019-2024"
+      geography_scope: "Vietnam"
+      known_limitations:
+        - "Urban bias"
+        - "Sensitive to feature sparsity"
+
+    audit:
+      reproducible: true
+      deterministic_inference: true
+      mrm_review_id: "MRM-2025-014"
+
+  # ==========================================================
+  # COMPARABLE SALES MODEL
+  # ==========================================================
+  - model_id: "comparable_sales_v1"
+    model_family: "comparable"
+    description: "Comparable-based pricing model using similarity scoring"
+    version: "1.0.0"
+    status: "validated"
+
+    business_role:
+      allowed:
+        - "produce_price_estimate"
+        - "produce_comparable_set"
+      forbidden:
+        - "ensemble_weighting"
+        - "final_decision"
+
+    artifact:
+      storage_type: "immutable_object_store"
+      path: "models/comparable/comparable_sales_v1/"
+      artifact_hash: "sha256:REPLACE_WITH_REAL_HASH"
+
+    schemas:
+      input_schema_ref: "feature_pipeline/schemas/tabular_schema.json"
+      output_schema_ref: "modeling/schemas/comparable_output_schema.json"
+
+    explainability:
+      level: "high"
+      method: "explicit_comparables"
+
+    training_metadata:
+      data_source: "verified_comparable_transactions"
+      training_period: "2020-2024"
+      geography_scope: "Vietnam"
+      known_limitations:
+        - "Requires sufficient recent comparables"
+        - "Sparse in rural areas"
+
+    audit:
+      reproducible: true
+      deterministic_inference: true
+      mrm_review_id: "MRM-2025-021"
+
+  # ==========================================================
+  # COST APPROACH MODEL
+  # ==========================================================
+  - model_id: "cost_approach_v1"
+    model_family: "cost"
+    description: "Cost-based valuation model using construction and depreciation data"
+    version: "1.0.0"
+    status: "validated"
+
+    business_role:
+      allowed:
+        - "produce_price_estimate"
+      forbidden:
+        - "market_trend_adjustment"
+        - "final_decision"
+
+    artifact:
+      storage_type: "immutable_object_store"
+      path: "models/cost/cost_approach_v1/"
+      artifact_hash: "sha256:REPLACE_WITH_REAL_HASH"
+
+    schemas:
+      input_schema_ref: "feature_pipeline/schemas/tabular_schema.json"
+      output_schema_ref: "modeling/schemas/price_output_schema.json"
+
+    explainability:
+      level: "high"
+      method: "formula_traceable"
+
+    training_metadata:
+      data_source: "construction_cost_index_vn"
+      training_period: "2021-2024"
+      geography_scope: "Vietnam"
+      known_limitations:
+        - "Lagging market conditions"
+        - "Sensitive to depreciation assumptions"
+
+    audit:
+      reproducible: true
+      deterministic_inference: true
+      mrm_review_id: "MRM-2025-033"
+
+# ------------------------------------------------------------
+# REGISTRY ENFORCEMENT NOTES
+# ------------------------------------------------------------
+enforcement_notes:
+  - "Presence in registry does NOT imply activation"
+  - "Activation requires passing model_activation_rules.yaml"
+  - "All outputs must be written to valuation_dossier.json"
+  - "Human override may block any model regardless of status"
+# ============================================================
+# END OF MODEL REGISTRY
+# ============================================================

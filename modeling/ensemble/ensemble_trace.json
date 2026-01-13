@@ -1,0 +1,78 @@
+{
+    "ensemble_trace_version": "v1.0.0",
+    "generated_at": null,
+    "valuation_request_id": null,
+    "valuation_dossier_hash": null,
+    "governance_declaration": {
+        "role": "ENSEMBLE TRACE LOG",
+        "description": "This file records the full trace of ensemble aggregation for audit and reproducibility purposes.",
+        "non_decisional_notice": "This trace does not represent a valuation decision, approval, or market value.",
+        "human_accountability": "Final responsibility for valuation conclusions remains with licensed human appraisers."
+    },
+    "input_models": [
+        {
+            "model_id": null,
+            "model_family": null,
+            "model_version": null,
+            "output_schema_ref": null,
+            "output_hash": null,
+            "indicative_price": null,
+            "status": "USED | SKIPPED | BLOCKED"
+        }
+    ],
+    "ensemble_steps": {
+        "outlier_suppression": {
+            "module": "outlier_suppressor",
+            "applied": false,
+            "method": "IQR | NONE",
+            "parameters": null,
+            "affected_models": [],
+            "governance_note": "Outlier suppression, if applied, does not modify original model outputs."
+        },
+        "weight_assignment": {
+            "module": "weight_optimizer",
+            "method": "STATIC_PREAPPROVED_WEIGHTS",
+            "weights": [
+                {
+                    "model_id": null,
+                    "weight": null
+                }
+            ],
+            "governance_note": "Weights are pre-approved, non-adaptive, and not optimized by outcome."
+        },
+        "price_aggregation": {
+            "module": "price_aggregator",
+            "method": "WEIGHTED_ARITHMETIC_MEAN",
+            "aggregated_indicative_price": null,
+            "aggregation_hash": null,
+            "governance_note": "Aggregated price is indicative only and not a valuation decision."
+        }
+    },
+    "confidence_estimation": {
+        "module": "confidence_estimator",
+        "confidence_score": null,
+        "components": {
+            "agreement_score": null,
+            "data_quality_score": null
+        },
+        "governance_note": "Confidence reflects agreement and data quality only; it does not measure accuracy or approve valuation."
+    },
+    "controls_and_flags": {
+        "human_review_required": true,
+        "override_allowed": true,
+        "override_reason_code": null,
+        "override_actor": null,
+        "override_timestamp": null
+    },
+    "reproducibility": {
+        "feature_snapshot_hash": null,
+        "model_registry_snapshot_hash": null,
+        "ensemble_code_version": "v1.0.0",
+        "deterministic_replay_supported": true
+    },
+    "audit_footer": {
+        "immutable_notice": "This file must not be overwritten once persisted.",
+        "legal_status": "Audit Evidence",
+        "retention_policy": "Per bank and regulatory data retention rules"
+    }
+}

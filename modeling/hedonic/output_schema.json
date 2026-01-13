@@ -1,0 +1,178 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://advanced-avm/schemas/model/hedonic/output_schema.json",
+    "title": "Hedonic Model Output Schema",
+    "description": "Canonical, non-decisive output contract for hedonic valuation models in Advanced AVM. Output is descriptive, auditable, and reproducible.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "model_metadata",
+        "input_reference",
+        "price_projection",
+        "feature_contributions",
+        "limitations",
+        "audit"
+    ],
+    "properties": {
+        "model_metadata": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "model_id",
+                "model_family",
+                "model_version",
+                "execution_timestamp_utc"
+            ],
+            "properties": {
+                "model_id": {
+                    "type": "string",
+                    "description": "Immutable model identifier from model_registry.yaml"
+                },
+                "model_family": {
+                    "type": "string",
+                    "enum": [
+                        "HEDONIC"
+                    ],
+                    "description": "Model family classification"
+                },
+                "model_version": {
+                    "type": "string",
+                    "description": "Version of the hedonic model"
+                },
+                "execution_timestamp_utc": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "UTC timestamp when inference was executed"
+                }
+            }
+        },
+        "input_reference": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "valuation_hash",
+                "feature_snapshot_hash"
+            ],
+            "properties": {
+                "valuation_hash": {
+                    "type": "string",
+                    "description": "Hash of valuation_dossier snapshot"
+                },
+                "feature_snapshot_hash": {
+                    "type": "string",
+                    "description": "Hash of feature snapshot used by this model"
+                }
+            }
+        },
+        "price_projection": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "estimated_price",
+                "currency",
+                "price_band",
+                "estimation_method"
+            ],
+            "properties": {
+                "estimated_price": {
+                    "type": "number",
+                    "description": "Model-estimated price (projection only, non-binding)"
+                },
+                "currency": {
+                    "type": "string",
+                    "description": "ISO currency code (e.g. VND)"
+                },
+                "price_band": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "lower",
+                        "upper"
+                    ],
+                    "properties": {
+                        "lower": {
+                            "type": "number",
+                            "description": "Lower bound of descriptive price range"
+                        },
+                        "upper": {
+                            "type": "number",
+                            "description": "Upper bound of descriptive price range"
+                        }
+                    }
+                },
+                "estimation_method": {
+                    "type": "string",
+                    "enum": [
+                        "LOG_LINEAR_REGRESSION"
+                    ],
+                    "description": "Declared estimation technique (descriptive only)"
+                }
+            }
+        },
+        "feature_contributions": {
+            "type": "array",
+            "description": "Explainable, non-decisive contribution breakdown",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                    "feature_name",
+                    "contribution_value",
+                    "direction"
+                ],
+                "properties": {
+                    "feature_name": {
+                        "type": "string",
+                        "description": "Feature identifier from feature_catalog"
+                    },
+                    "contribution_value": {
+                        "type": "number",
+                        "description": "Numeric contribution in model space (not a decision factor)"
+                    },
+                    "direction": {
+                        "type": "string",
+                        "enum": [
+                            "POSITIVE",
+                            "NEGATIVE",
+                            "NEUTRAL"
+                        ],
+                        "description": "Directional effect for human interpretability"
+                    }
+                }
+            }
+        },
+        "limitations": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Declared limitations of this output"
+        },
+        "audit": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "output_hash",
+                "generated_by",
+                "reproducible"
+            ],
+            "properties": {
+                "output_hash": {
+                    "type": "string",
+                    "description": "Deterministic hash of this output payload"
+                },
+                "generated_by": {
+                    "type": "string",
+                    "description": "System or pipeline identifier"
+                },
+                "reproducible": {
+                    "type": "boolean",
+                    "enum": [
+                        true
+                    ],
+                    "description": "Must always be true for compliant outputs"
+                }
+            }
+        }
+    }
+}

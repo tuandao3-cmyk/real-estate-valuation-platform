@@ -1,0 +1,129 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/schemas/decision_result.json",
+    "title": "DecisionResult",
+    "description": "Lightweight, bank-safe decision output derived from valuation_dossier.json. This schema represents the final decision state only and is not a source of valuation truth.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "decision_id",
+        "dossier_reference",
+        "decision_status",
+        "final_value",
+        "confidence_score",
+        "risk_band",
+        "approval_required",
+        "decided_at",
+        "decided_by",
+        "audit"
+    ],
+    "properties": {
+        "decision_id": {
+            "type": "string",
+            "description": "Unique identifier for this decision instance."
+        },
+        "dossier_reference": {
+            "type": "object",
+            "description": "Reference to the canonical valuation dossier.",
+            "additionalProperties": false,
+            "required": [
+                "dossier_id",
+                "valuation_hash"
+            ],
+            "properties": {
+                "dossier_id": {
+                    "type": "string"
+                },
+                "valuation_hash": {
+                    "type": "string"
+                }
+            }
+        },
+        "decision_status": {
+            "type": "string",
+            "description": "Final decision outcome after rule evaluation and human review.",
+            "enum": [
+                "approved",
+                "conditional",
+                "rejected"
+            ]
+        },
+        "final_value": {
+            "type": "number",
+            "description": "Final valuation figure approved by human authority. Must be copied from valuation_dossier without modification."
+        },
+        "confidence_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence score as recorded in valuation_dossier. Not recalculated here."
+        },
+        "risk_band": {
+            "type": "string",
+            "enum": [
+                "LOW",
+                "MEDIUM",
+                "HIGH"
+            ],
+            "description": "Risk band derived from valuation_dossier risk assessment."
+        },
+        "approval_required": {
+            "type": "boolean",
+            "description": "Indicates whether manual approval was required per rule evaluation."
+        },
+        "decided_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the decision was finalized."
+        },
+        "decided_by": {
+            "type": "object",
+            "description": "Human authority responsible for the final decision.",
+            "additionalProperties": false,
+            "required": [
+                "actor_id",
+                "role"
+            ],
+            "properties": {
+                "actor_id": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string",
+                    "description": "Human role (e.g., Appraiser, Credit Officer, Manager)."
+                }
+            }
+        },
+        "conditions": {
+            "type": "array",
+            "description": "Optional conditions attached to a conditional approval.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "audit": {
+            "type": "object",
+            "description": "Audit and traceability metadata.",
+            "additionalProperties": false,
+            "required": [
+                "trace_id",
+                "decision_hash",
+                "schema_version"
+            ],
+            "properties": {
+                "trace_id": {
+                    "type": "string",
+                    "description": "Trace identifier linking back to valuation workflow."
+                },
+                "decision_hash": {
+                    "type": "string",
+                    "description": "Hash of this decision result for immutability verification."
+                },
+                "schema_version": {
+                    "type": "string",
+                    "description": "Version of the decision_result schema."
+                }
+            }
+        }
+    }
+}

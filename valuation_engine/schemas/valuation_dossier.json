@@ -1,1 +1,370 @@
-{}
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.com/schemas/valuation_dossier.json",
+    "title": "ValuationDossier",
+    "description": "Canonical, audit-grade valuation dossier for hybrid AVM systems. This schema defines the immutable valuation contract and enforces strict separation of roles between AI, rules, and human decision-makers.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "dossier_metadata",
+        "valuation_context",
+        "input_snapshot",
+        "model_outputs",
+        "ensemble_summary",
+        "risk_assessment",
+        "rule_evaluation",
+        "human_actions",
+        "llm_assistance",
+        "final_decision",
+        "audit_trail"
+    ],
+    "properties": {
+        "dossier_metadata": {
+            "type": "object",
+            "description": "System-level identifiers and dossier immutability anchors.",
+            "additionalProperties": false,
+            "required": [
+                "dossier_id",
+                "created_at",
+                "schema_version",
+                "system_version"
+            ],
+            "properties": {
+                "dossier_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "schema_version": {
+                    "type": "string"
+                },
+                "system_version": {
+                    "type": "string"
+                }
+            }
+        },
+        "valuation_context": {
+            "type": "object",
+            "description": "Human-declared valuation purpose and scope.",
+            "additionalProperties": false,
+            "required": [
+                "valuation_date",
+                "valuation_purpose",
+                "intended_users",
+                "standard_reference"
+            ],
+            "properties": {
+                "valuation_date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "valuation_purpose": {
+                    "type": "string",
+                    "enum": [
+                        "credit",
+                        "investment",
+                        "internal",
+                        "due_diligence"
+                    ]
+                },
+                "intended_users": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "standard_reference": {
+                    "type": "array",
+                    "description": "Applicable valuation standards or regulatory references.",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "input_snapshot": {
+            "type": "object",
+            "description": "Immutable snapshot of all input data used for valuation.",
+            "additionalProperties": false,
+            "required": [
+                "snapshot_id",
+                "snapshot_hash",
+                "data_sources"
+            ],
+            "properties": {
+                "snapshot_id": {
+                    "type": "string"
+                },
+                "snapshot_hash": {
+                    "type": "string"
+                },
+                "data_sources": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "source_name",
+                            "source_type",
+                            "ingested_at"
+                        ],
+                        "properties": {
+                            "source_name": {
+                                "type": "string"
+                            },
+                            "source_type": {
+                                "type": "string"
+                            },
+                            "ingested_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "model_outputs": {
+            "type": "array",
+            "description": "Outputs of individual valuation-related models. No single output implies acceptance.",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                    "model_name",
+                    "model_version",
+                    "model_category",
+                    "output_value",
+                    "output_unit",
+                    "confidence_indicator",
+                    "limitations"
+                ],
+                "properties": {
+                    "model_name": {
+                        "type": "string"
+                    },
+                    "model_version": {
+                        "type": "string"
+                    },
+                    "model_category": {
+                        "type": "string",
+                        "enum": [
+                            "trust_fraud",
+                            "feature",
+                            "avm_core",
+                            "ensemble",
+                            "risk"
+                        ]
+                    },
+                    "output_value": {
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "output_unit": {
+                        "type": "string"
+                    },
+                    "confidence_indicator": {
+                        "type": [
+                            "number",
+                            "null"
+                        ],
+                        "minimum": 0,
+                        "maximum": 1
+                    },
+                    "limitations": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "ensemble_summary": {
+            "type": "object",
+            "description": "Aggregation result produced by ensemble logic without overriding individual models.",
+            "additionalProperties": false,
+            "required": [
+                "aggregated_value",
+                "value_range",
+                "dispersion_metric"
+            ],
+            "properties": {
+                "aggregated_value": {
+                    "type": "number"
+                },
+                "value_range": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "dispersion_metric": {
+                    "type": "string"
+                }
+            }
+        },
+        "risk_assessment": {
+            "type": "object",
+            "description": "Risk signals derived from risk-focused models.",
+            "additionalProperties": false,
+            "required": [
+                "risk_band",
+                "risk_flags"
+            ],
+            "properties": {
+                "risk_band": {
+                    "type": "string",
+                    "enum": [
+                        "LOW",
+                        "MEDIUM",
+                        "HIGH"
+                    ]
+                },
+                "risk_flags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "rule_evaluation": {
+            "type": "object",
+            "description": "Outcome of rule-based approval logic.",
+            "additionalProperties": false,
+            "required": [
+                "approval_required",
+                "rule_triggers"
+            ],
+            "properties": {
+                "approval_required": {
+                    "type": "boolean"
+                },
+                "rule_triggers": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "human_actions": {
+            "type": "array",
+            "description": "All human reviews, approvals, and overrides.",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                    "actor_id",
+                    "role",
+                    "action_type",
+                    "timestamp",
+                    "reason"
+                ],
+                "properties": {
+                    "actor_id": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string"
+                    },
+                    "action_type": {
+                        "type": "string",
+                        "enum": [
+                            "review",
+                            "approval",
+                            "override",
+                            "rejection"
+                        ]
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "reason": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "llm_assistance": {
+            "type": "object",
+            "description": "Narrative assistance generated by LLM. No numeric or decision authority.",
+            "additionalProperties": false,
+            "properties": {
+                "valuation_commentary": {
+                    "type": "string"
+                },
+                "assumptions_summary": {
+                    "type": "string"
+                },
+                "limitations_disclosure": {
+                    "type": "string"
+                },
+                "checklist_generated": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "final_decision": {
+            "type": "object",
+            "description": "Final valuation conclusion made by authorized human decision-maker.",
+            "additionalProperties": false,
+            "required": [
+                "final_value",
+                "confidence_score",
+                "decision_status",
+                "signed_by"
+            ],
+            "properties": {
+                "final_value": {
+                    "type": "number"
+                },
+                "confidence_score": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "decision_status": {
+                    "type": "string",
+                    "enum": [
+                        "approved",
+                        "conditional",
+                        "rejected"
+                    ]
+                },
+                "signed_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "audit_trail": {
+            "type": "object",
+            "description": "Reproducibility and audit trace information.",
+            "additionalProperties": false,
+            "required": [
+                "valuation_hash",
+                "generated_at"
+            ],
+            "properties": {
+                "valuation_hash": {
+                    "type": "string"
+                },
+                "generated_at": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        }
+    }
+}

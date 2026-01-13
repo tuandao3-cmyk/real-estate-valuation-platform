@@ -1,1 +1,120 @@
-{}
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "ValuationRequest",
+    "description": "Canonical schema for initiating a valuation workflow request. This schema defines ONLY the request envelope and input intent. It does NOT contain valuation results, decisions, or legal records. valuation_dossier.json remains the Single Source of Truth.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "request_id",
+        "requested_at_utc",
+        "requestor",
+        "asset_reference",
+        "valuation_purpose",
+        "jurisdiction",
+        "workflow_context"
+    ],
+    "properties": {
+        "request_id": {
+            "type": "string",
+            "description": "Unique identifier for the valuation request. Used for traceability only."
+        },
+        "requested_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp when the valuation request was submitted."
+        },
+        "requestor": {
+            "type": "object",
+            "description": "Information about the human or system requesting the valuation. This does NOT imply approval authority.",
+            "additionalProperties": false,
+            "required": [
+                "requestor_id",
+                "requestor_role"
+            ],
+            "properties": {
+                "requestor_id": {
+                    "type": "string",
+                    "description": "Identifier of the requesting entity."
+                },
+                "requestor_role": {
+                    "type": "string",
+                    "enum": [
+                        "APPRAISER",
+                        "CREDIT_OFFICER",
+                        "RELATIONSHIP_MANAGER",
+                        "SYSTEM_INITIATED"
+                    ],
+                    "description": "Role of the requestor. Role does NOT grant decision rights."
+                }
+            }
+        },
+        "asset_reference": {
+            "type": "object",
+            "description": "Reference to the asset to be valued. Contains identifiers only, not valuation data.",
+            "additionalProperties": false,
+            "required": [
+                "asset_id",
+                "asset_type"
+            ],
+            "properties": {
+                "asset_id": {
+                    "type": "string",
+                    "description": "Internal or external identifier of the asset."
+                },
+                "asset_type": {
+                    "type": "string",
+                    "enum": [
+                        "RESIDENTIAL",
+                        "COMMERCIAL",
+                        "INDUSTRIAL",
+                        "LAND",
+                        "MIXED_USE"
+                    ],
+                    "description": "Declared asset category."
+                }
+            }
+        },
+        "valuation_purpose": {
+            "type": "string",
+            "enum": [
+                "MORTGAGE",
+                "CREDIT_REVIEW",
+                "INTERNAL_RISK",
+                "REGULATORY_REPORTING",
+                "OTHER"
+            ],
+            "description": "Declared purpose of valuation. Purpose influences workflow routing only."
+        },
+        "jurisdiction": {
+            "type": "string",
+            "description": "Legal jurisdiction applicable to the valuation (e.g., VN)."
+        },
+        "workflow_context": {
+            "type": "object",
+            "description": "Non-decisional workflow metadata used for routing and governance enforcement.",
+            "additionalProperties": false,
+            "required": [
+                "source_system"
+            ],
+            "properties": {
+                "source_system": {
+                    "type": "string",
+                    "description": "System or channel from which the request originated."
+                },
+                "priority_flag": {
+                    "type": "string",
+                    "enum": [
+                        "NORMAL",
+                        "URGENT"
+                    ],
+                    "description": "Operational priority only. Does NOT affect valuation logic.",
+                    "default": "NORMAL"
+                },
+                "related_case_id": {
+                    "type": "string",
+                    "description": "Optional reference to a related credit or legal case."
+                }
+            }
+        }
+    }
+}

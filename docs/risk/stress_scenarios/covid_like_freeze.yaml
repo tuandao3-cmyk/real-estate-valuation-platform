@@ -1,1 +1,188 @@
 # YAML Config
+# covid_like_freeze.yaml
+
+---
+
+## 1. Mục đích tài liệu
+
+Tài liệu này mô tả **kịch bản stress test thị trường bất động sản – COVID-like Market Freeze** nhằm đánh giá **độ ổn định của hệ thống định giá (Advanced AVM – Hybrid AI + Thẩm định thủ công)** trong điều kiện thị trường:
+
+* Bị **đóng băng đột ngột** do cú sốc phi kinh tế
+* Gián đoạn giao dịch và thu thập dữ liệu
+* Hành vi thị trường không tuân theo quy luật thông thường
+
+Kịch bản được sử dụng **chỉ cho mục đích quản trị rủi ro mô hình**, không nhằm dự báo và không sử dụng trực tiếp cho quyết định tín dụng.
+
+---
+
+## 2. Phạm vi áp dụng
+
+* Áp dụng cho:
+
+  * Mô hình AVM
+  * Các lớp hỗ trợ AI trong hệ thống Hybrid
+* Mục đích sử dụng mô hình:
+
+  * Định giá tài sản bảo đảm
+  * Rà soát danh mục
+  * Due Diligence nội bộ
+* Phạm vi địa lý:
+
+  * Thị trường nội địa
+  * Có thể mở rộng theo vùng chịu ảnh hưởng mạnh bởi giãn cách xã hội
+
+---
+
+## 3. Mô tả tổng quan kịch bản
+
+Kịch bản giả định một sự kiện mang tính **khủng hoảng y tế hoặc xã hội quy mô lớn**, tương tự giai đoạn đầu của đại dịch COVID-19, dẫn đến:
+
+* Hoạt động kinh tế bị gián đoạn
+* Giao dịch bất động sản gần như tê liệt trong ngắn hạn
+* Giá thị trường không phản ánh đúng quan hệ cung – cầu
+
+---
+
+## 4. Giả định vĩ mô
+
+* Các biện pháp giãn cách xã hội được áp dụng trên diện rộng
+* Hoạt động kinh doanh và dịch vụ bị hạn chế
+* Thu nhập của người dân và doanh nghiệp suy giảm đột ngột
+* Chính sách hỗ trợ kinh tế có độ trễ trong tác động
+
+Các giả định này chỉ nhằm tạo điều kiện stress cho mô hình, không phản ánh quan điểm dự báo của tổ chức.
+
+---
+
+## 5. Giả định thị trường bất động sản
+
+### 5.1 Giao dịch và thanh khoản
+
+* Số lượng giao dịch giảm xuống mức tối thiểu
+* Nhiều khu vực không phát sinh giao dịch trong thời gian dài
+* Giá chào bán tồn tại nhưng không phản ánh khả năng khớp lệnh thực tế
+
+### 5.2 Hành vi thị trường
+
+* Người mua và người bán trì hoãn quyết định
+* Tâm lý phòng thủ chi phối
+* Thị trường thiếu điểm tham chiếu giá đáng tin cậy
+
+---
+
+## 6. Giả định dữ liệu đầu vào
+
+* Dữ liệu giao dịch mới gần như không phát sinh
+* Phụ thuộc nhiều vào:
+
+  * Dữ liệu lịch sử trước khủng hoảng
+  * Dữ liệu khảo sát gián tiếp
+* Nguy cơ cao về:
+
+  * Data staleness
+  * Selection bias
+
+---
+
+## 7. Tác động kỳ vọng lên hệ thống AVM
+
+### 7.1 Hiệu năng mô hình
+
+* Độ tin cậy của ước tính giá suy giảm
+* Khoảng giá hợp lý mở rộng
+* Khả năng ngoại suy của mô hình bị thử thách nghiêm trọng
+
+### 7.2 Vai trò của AI
+
+* AI chỉ được sử dụng để:
+
+  * Nhận diện mức độ bất định
+  * Cảnh báo rủi ro dữ liệu
+* AI không được phép tự động:
+
+  * Cập nhật giá trị thị trường
+  * Thay thế đánh giá chuyên môn
+
+---
+
+## 8. Vai trò thẩm định viên
+
+* Thẩm định viên là chủ thể quyết định cuối cùng
+* Trọng tâm đánh giá chuyển sang:
+
+  * Giá trị thận trọng
+  * Khả năng thanh khoản dài hạn
+  * Phân tích kịch bản
+* AVM chỉ đóng vai trò tham chiếu có điều kiện
+
+---
+
+## 9. Cơ chế kiểm soát và governance
+
+* Kích hoạt chế độ **Restricted Model Usage**
+* Yêu cầu phê duyệt bổ sung khi sử dụng kết quả AVM
+* Báo cáo stress test được gửi tới:
+
+  * Quản trị rủi ro mô hình
+  * Khối quản lý tín dụng (để tham chiếu, không quyết định)
+
+---
+
+## 10. Ngưỡng cảnh báo (conceptual)
+
+* Thời gian không có giao dịch vượt ngưỡng lịch sử
+* Sai lệch lớn giữa các phương pháp định giá
+* Gia tăng đáng kể các trường hợp yêu cầu thẩm định thủ công đầy đủ
+
+Ngưỡng cụ thể được quy định trong chính sách nội bộ liên quan.
+
+---
+
+## 11. Kết quả mong đợi của stress test
+
+* Đánh giá mức độ suy giảm hiệu quả của mô hình
+* Kiểm tra tính đầy đủ của cơ chế kiểm soát
+* Xác định thời điểm cần:
+
+  * Giảm phạm vi sử dụng AVM
+  * Tạm ngưng một số mô hình
+
+---
+
+## 12. Giới hạn sử dụng
+
+* Không sử dụng kết quả stress test để:
+
+  * Ra quyết định cấp tín dụng cá nhân
+  * Xác định giá trị tài sản cụ thể cho giao dịch
+* Chỉ sử dụng cho:
+
+  * Quản trị rủi ro mô hình
+  * Báo cáo nội bộ
+  * Kiểm toán và tuân thủ
+
+---
+
+## 13. Lưu vết và kiểm toán
+
+* Kịch bản phải được:
+
+  * Đặt mã phiên bản
+  * Phê duyệt bởi bộ phận có thẩm quyền
+  * Lưu trữ cùng hồ sơ quản trị mô hình
+* Mọi kết luận phải có dấu vết rà soát và phê duyệt
+
+---
+
+## 14. Kết luận
+
+Kịch bản **COVID-like Market Freeze** nhằm đảm bảo hệ thống định giá bất động sản:
+
+* Nhận diện đúng giới hạn của mô hình
+* Sử dụng AI một cách thận trọng
+* Duy trì vai trò trung tâm của thẩm định viên
+* Phù hợp với yêu cầu quản trị rủi ro và tuân thủ ngân hàng
+
+---
+
+**End of Scenario Description**

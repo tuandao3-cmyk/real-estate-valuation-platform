@@ -1,0 +1,45 @@
+# =========================
+# Backend / API
+# =========================
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+pydantic>=2.7.0
+python-multipart>=0.0.21
+
+# =========================
+# Database / Persistence
+# =========================
+sqlalchemy>=2.0.30
+databases>=0.9.0
+psycopg[binary]>=3.3.2
+
+# =========================
+# Utilities / Logging
+# =========================
+python-dotenv>=1.2.0
+loguru>=0.7.3
+
+# =========================
+# UI (Streamlit)
+# =========================
+streamlit>=1.52.0
+streamlit-option-menu==0.4.0
+streamlit-aggrid==1.2.1.post2
+
+# =========================
+# PDF / Reporting
+# =========================
+jinja2>=3.1.4
+pdfkit==1.0.0
+
+# =========================
+# Data / Math / Model
+# =========================
+numpy>=2.1.0
+pandas>=2.2.2
+scipy>=1.14.0
+
+# =========================
+# Audit / Visualization
+# =========================
+rich>=13.7.1

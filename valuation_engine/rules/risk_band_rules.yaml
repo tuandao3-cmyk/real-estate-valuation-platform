@@ -1,0 +1,106 @@
+schema_version: "1.0.0"
+artifact_type: "rule_policy"
+risk_level: "NHÓM A"
+role: "Risk Band Routing Policy (Rule-only)"
+
+description: >
+  Defines workflow routing and control intensity based on
+  pre-assessed risk bands. This policy does not compute risk,
+  does not adjust valuation outputs, and does not make approval
+  decisions. It only routes cases to appropriate human controls.
+
+scope:
+  applies_to: "valuation_dossier.risk_assessment"
+  consumer: "Valuation Rule Engine"
+  decision_impact: "workflow_routing_only"
+
+inputs:
+  required:
+    - overall_risk_band
+    - risk_components
+  source: "valuation_dossier.json"
+  read_only: true
+
+risk_bands:
+  LOW:
+    meaning: "Low valuation and data risk"
+    characteristics:
+      - strong data coverage
+      - stable market indicators
+      - low anomaly signals
+
+  MEDIUM:
+    meaning: "Moderate risk requiring enhanced review"
+    characteristics:
+      - partial data gaps
+      - moderate model dispersion
+      - localized market volatility
+
+  HIGH:
+    meaning: "High risk or uncertainty"
+    characteristics:
+      - weak or inconsistent data
+      - high model dispersion
+      - legal or market anomalies detected
+
+workflow_actions:
+  LOW:
+    approval_required: false
+    routing:
+      - standard_processing
+    notes:
+      - "Subject to random audit sampling"
+      - "No mandatory escalation"
+
+  MEDIUM:
+    approval_required: true
+    routing:
+      - appraiser_review
+    notes:
+      - "Human appraiser review required"
+      - "Justification mandatory for overrides"
+
+  HIGH:
+    approval_required: true
+    routing:
+      - senior_appraiser_review
+      - credit_officer_review
+    notes:
+      - "Mandatory senior-level approval"
+      - "High audit sensitivity"
+      - "No automated continuation allowed"
+
+hard_stops:
+  - condition: "overall_risk_band is null"
+    action: "block_workflow"
+    reason: "Missing risk band classification"
+
+  - condition: "risk_components incomplete"
+    action: "block_workflow"
+    reason: "Non-reproducible risk assessment"
+
+explicit_prohibitions:
+  - must_not_compute_risk
+  - must_not_modify_risk_band
+  - must_not_adjust_price
+  - must_not_override_human_decision
+  - must_not_call_llm
+
+audit:
+  traceable: true
+  reproducible: true
+  policy_id_required: true
+  change_log_required: true
+
+governance:
+  owner: "Enterprise Risk Management / MRM"
+  change_requires:
+    - version_bump
+    - written_rationale
+    - impact_analysis
+    - approval_committee_signoff
+
+notes:
+  - "Risk band controls workflow intensity, not valuation output"
+  - "High risk always escalates to humans"
+  - "This policy enforces defensible valuation governance"

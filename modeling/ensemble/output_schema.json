@@ -1,0 +1,142 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Ensemble Indicative Output Schema",
+    "description": "Schema contract for ensemble aggregation output. This output is indicative only and must not be treated as a valuation decision or approval signal.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "ensemble_version",
+        "valuation_hash",
+        "indicative_price",
+        "price_range",
+        "confidence_score",
+        "model_contributions",
+        "ensemble_trace_ref",
+        "governance_declaration",
+        "generated_at_utc"
+    ],
+    "properties": {
+        "ensemble_version": {
+            "type": "string",
+            "description": "Immutable ensemble implementation version."
+        },
+        "valuation_hash": {
+            "type": "string",
+            "description": "Hash reference to valuation_dossier.json (Single Source of Truth)."
+        },
+        "indicative_price": {
+            "type": [
+                "number",
+                "null"
+            ],
+            "description": "Aggregated indicative price produced by ensemble. Not a valuation decision."
+        },
+        "price_range": {
+            "type": "object",
+            "required": [
+                "low",
+                "high"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "low": {
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "Lower bound of indicative range."
+                },
+                "high": {
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "Upper bound of indicative range."
+                }
+            }
+        },
+        "confidence_score": {
+            "type": [
+                "number",
+                "null"
+            ],
+            "minimum": 0.0,
+            "maximum": 1.0,
+            "description": "Descriptive confidence projection. Must not be used for approval or valuation authority."
+        },
+        "model_contributions": {
+            "type": "array",
+            "description": "Transparent list of contributing models and their weights.",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                    "model_id",
+                    "model_version",
+                    "indicative_price",
+                    "weight",
+                    "status"
+                ],
+                "properties": {
+                    "model_id": {
+                        "type": "string"
+                    },
+                    "model_version": {
+                        "type": "string"
+                    },
+                    "indicative_price": {
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "weight": {
+                        "type": "number",
+                        "minimum": 0.0,
+                        "maximum": 1.0
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "USED",
+                            "SKIPPED",
+                            "BLOCKED"
+                        ]
+                    }
+                }
+            }
+        },
+        "ensemble_trace_ref": {
+            "type": "string",
+            "description": "Reference to ensemble_trace.json for full audit reconstruction."
+        },
+        "governance_declaration": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "non_decisional_notice",
+                "human_authority_notice",
+                "usage_restriction"
+            ],
+            "properties": {
+                "non_decisional_notice": {
+                    "type": "string",
+                    "const": "This output is indicative only and does not represent a valuation decision, approval, or market value."
+                },
+                "human_authority_notice": {
+                    "type": "string",
+                    "const": "Final valuation responsibility rests solely with authorized human appraisers."
+                },
+                "usage_restriction": {
+                    "type": "string",
+                    "const": "This output must not be used directly for credit approval, legal determination, or automated decision-making."
+                }
+            }
+        },
+        "generated_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp when ensemble output was generated."
+        }
+    }
+}

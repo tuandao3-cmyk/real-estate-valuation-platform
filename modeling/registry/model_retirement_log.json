@@ -1,0 +1,41 @@
+{
+    "schema_version": "1.0",
+    "log_type": "MODEL_RETIREMENT_LOG",
+    "governance_level": "LEGAL_GRADE",
+    "append_only": true,
+    "immutable": true,
+    "retirement_events": [
+        {
+            "retirement_id": "RETIRE-2025-001",
+            "model_id": "trust_score_model",
+            "model_version": "v1.2.0",
+            "model_hash": "8f3c1a4e2e9d4b8c6f9a1d0a4e7c5b3f9c1a2d4e6b8f0c3a9e7d5f1b2a",
+            "feature_snapshot_hash": "5d2e9a7f4c3b1a8e0f6d9c2a4b7e5f1d3c8a9e6b2f0a4d7c5b1e9",
+            "retired_at_utc": "2025-01-10T14:32:00Z",
+            "retirement_reason_code": "MODEL_SUPERSEDED",
+            "retirement_reason_description": "Model bị thay thế bởi phiên bản mới với feature snapshot ổn định hơn.",
+            "retirement_scope": "NO_NEW_INFERENCE",
+            "impact_assessment": {
+                "historical_valuations_affected": false,
+                "retraining_required": false,
+                "regulatory_notification_required": false
+            },
+            "replacement_model": {
+                "model_id": "trust_score_model",
+                "model_version": "v1.3.0",
+                "activation_policy_ref": "model_activation_rules.yaml#trust_score_model"
+            },
+            "approval": {
+                "approved_by": "model_governance_committee",
+                "approver_role": "MODEL_RISK_OWNER",
+                "approval_reference": "APPROVAL-LOG-2025-017",
+                "approved_at_utc": "2025-01-10T14:20:00Z"
+            },
+            "audit_metadata": {
+                "policy_version": "2024.12",
+                "master_spec_version": "ADVANCED_AVM_v1.0",
+                "record_hash": "sha256:1a9f3e8c4d7b2e6f5a0c9d8b1e7f4a6c3d2b9f8e0a5c6e4b7d1"
+            }
+        }
+    ]
+}

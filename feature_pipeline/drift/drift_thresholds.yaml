@@ -1,0 +1,88 @@
+# feature_pipeline/drift/drift_thresholds.yaml
+#
+# GOVERNANCE ROLE
+# ---------------
+# Static, non-executable drift interpretation reference.
+#
+# ABSOLUTE PROHIBITIONS
+# --------------------
+# - No runtime enforcement
+# - No auto alert
+# - No pass/fail logic
+# - No retraining trigger
+# - No workflow gating
+#
+# This file is for HUMAN REVIEW & AUDIT CONTEXT ONLY.
+
+version: "1.0.0"
+status: "GOVERNANCE_LOCKED"
+
+governance_statement: >
+  Drift thresholds defined in this file are descriptive reference values
+  intended solely for human interpretation, audit discussion, and model
+  risk review. They MUST NOT be used directly or indirectly to trigger
+  automated decisions, alerts, retraining, approval, or rejection.
+
+applicable_metrics:
+  - PSI
+  - KS_STATISTIC
+
+psi_reference_bands:
+  VERY_LOW:
+    range: [0.0, 0.05]
+    description: >
+      Negligible distribution change.
+      Typically observed in stable production environments.
+  LOW:
+    range: [0.05, 0.1]
+    description: >
+      Minor shift. Worth monitoring during routine review.
+  MEDIUM:
+    range: [0.1, 0.25]
+    description: >
+      Noticeable distribution drift.
+      Requires human analysis and contextual explanation.
+  HIGH:
+    range: [0.25, null]
+    description: >
+      Significant distribution shift.
+      Must be escalated to Model Risk / Governance review.
+      No automatic action permitted.
+
+ks_reference_bands:
+  LOW:
+    range: [0.0, 0.1]
+    description: >
+      Small statistical distance between distributions.
+  MEDIUM:
+    range: [0.1, 0.2]
+    description: >
+      Moderate distributional difference.
+      Interpretation depends on feature criticality and context.
+  HIGH:
+    range: [0.2, null]
+    description: >
+      Large distributional difference.
+      Requires formal review by model owners and MRM.
+
+interpretation_rules:
+  - rule: "No single metric is sufficient"
+    explanation: >
+      PSI or KS must never be interpreted in isolation.
+      Context, feature role, and business impact are mandatory.
+  - rule: "Drift does not imply model failure"
+    explanation: >
+      Observed drift does not automatically indicate degraded model
+      performance or invalid valuation outputs.
+  - rule: "Human authority is final"
+    explanation: >
+      All drift interpretation and resulting actions must be decided
+      by authorized human reviewers.
+
+audit_metadata:
+  owner_team: "Model Risk Management"
+  approval_required_for_change: true
+  change_process: >
+    Any modification requires version bump, written rationale,
+    and governance committee approval.
+  last_reviewed: "2026-01-01"

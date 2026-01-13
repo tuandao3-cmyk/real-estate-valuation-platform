@@ -1,0 +1,177 @@
+# ============================================================
+# FEATURE DEPENDENCIES REGISTRY
+# File: feature_pipeline/registry/feature_dependencies.yaml
+#
+# Purpose:
+#   Explicitly declare dependency relationships between features
+#   for audit, lineage, and reproducibility purposes.
+#
+# Governance Level:
+#   NHÓM A – Audit / Model Governance Critical
+#
+# IMPORTANT:
+# - This file is DECLARATIVE ONLY
+# - It does NOT execute dependency resolution
+# - It does NOT compute features
+# - It does NOT define feature order of execution
+#
+# MASTER_SPEC COMPLIANCE:
+# - Feature ≠ Logic
+# - Feature ≠ Model
+# - Feature ≠ Decision
+# ============================================================
+
+dependency_schema_version: "1.0.0"
+last_updated_utc: "2026-01-09T00:00:00Z"
+
+governance:
+  owner: "Feature Governance Committee"
+  approval_required: true
+  change_policy: "Version bump + written rationale + impact analysis"
+  immutable_history: true
+
+global_rules:
+  dependency_principles:
+    - "Dependencies are informational, not executable"
+    - "No circular dependencies allowed"
+    - "Dependencies must resolve to raw data or lower-level features"
+    - "All dependencies must be traceable to valuation_dossier snapshot"
+  forbidden_patterns:
+    - "Feature depending on model output"
+    - "Feature depending on rule engine output"
+    - "Feature depending on LLM output"
+    - "Feature depending on human override"
+
+# ============================================================
+# DEPENDENCY DEFINITIONS
+# ============================================================
+
+dependencies:
+  # ------------------------------------------------------------
+  # DATA QUALITY & CLEANING FEATURES
+  # ------------------------------------------------------------
+
+  address_normalization_hash:
+    feature_id: "FTR_ADDR_001"
+    depends_on:
+      raw_inputs:
+        - raw_address_fields
+      upstream_features: []
+    dependency_type: "raw_only"
+    notes:
+      - "Pure normalization dependency"
+      - "No semantic enrichment"
+
+  geocode_confidence:
+    feature_id: "FTR_GEO_001"
+    depends_on:
+      raw_inputs:
+        - normalized_address
+      upstream_features:
+        - address_normalization_hash
+    dependency_type: "raw_plus_feature"
+    notes:
+      - "Depends on deterministic address normalization"
+      - "No dependency on price-related features"
+
+  data_completeness_ratio:
+    feature_id: "FTR_DATA_001"
+    depends_on:
+      raw_inputs:
+        - dataset_schema
+        - dataset_values
+      upstream_features: []
+    dependency_type: "raw_only"
+    notes:
+      - "Counts presence only"
+      - "No correctness inference"
+
+  # ------------------------------------------------------------
+  # TRUST & INTEGRITY FEATURES
+  # ------------------------------------------------------------
+
+  listing_trust_feature_vector:
+    feature_id: "FTR_TRUST_001"
+    depends_on:
+      raw_inputs:
+        - image_forensics_signals
+        - content_analysis_signals
+        - verification_signals
+      upstream_features: []
+    dependency_type: "raw_only"
+    notes:
+      - "Aggregative descriptive vector"
+      - "Not a fraud decision"
+
+  image_condition_score:
+    feature_id: "FTR_IMG_001"
+    depends_on:
+      raw_inputs:
+        - property_images
+      upstream_features: []
+    dependency_type: "raw_only"
+    notes:
+      - "Image-based signal only"
+      - "Cannot replace inspection"
+
+  # ------------------------------------------------------------
+  # TEXT & SEMANTIC FEATURES
+  # ------------------------------------------------------------
+
+  text_embedding_vector:
+    feature_id: "FTR_TEXT_001"
+    depends_on:
+      raw_inputs:
+        - listing_text
+      upstream_features: []
+    dependency_type: "raw_only"
+    notes:
+      - "Embedding model output treated as feature extractor"
+      - "No semantic judgment"
+
+  # ------------------------------------------------------------
+  # GEO & MARKET FEATURES
+  # ------------------------------------------------------------
+
+  micro_market_cluster_id:
+    feature_id: "FTR_GEO_002"
+    depends_on:
+      raw_inputs:
+        - latitude
+        - longitude
+      upstream_features:
+        - geocode_confidence
+    dependency_type: "raw_plus_feature"
+    notes:
+      - "Geographic clustering only"
+      - "Cluster ID ≠ price signal"
+
+  # ------------------------------------------------------------
+  # DRIFT & GOVERNANCE FEATURES
+  # ------------------------------------------------------------
+
+  feature_drift_flag:
+    feature_id: "FTR_DRIFT_001"
+    depends_on:
+      raw_inputs:
+        - historical_feature_distribution
+        - current_feature_distribution
+      upstream_features:
+        - data_completeness_ratio
+    dependency_type: "monitoring_only"
+    notes:
+      - "Monitoring signal only"
+      - "No auto-retraining trigger"
+
+# ============================================================
+# VALIDATION RULES (DECLARATIVE)
+# ============================================================
+
+validation:
+  circular_dependency_check: true
+  unresolved_dependency_check: true
+  forbidden_dependency_enforcement: true
+# ============================================================
+# END OF FEATURE DEPENDENCIES
+# Any modification without governance approval is INVALID.
+# ============================================================

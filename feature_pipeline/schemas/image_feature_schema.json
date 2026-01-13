@@ -1,0 +1,128 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Image Feature Schema",
+    "description": "Canonical schema for image-derived features and signals. Governance-locked, non-decisive.",
+    "type": "object",
+    "required": [
+        "feature_id",
+        "feature_version",
+        "schema_version",
+        "owner_role",
+        "feature_type",
+        "image_metadata",
+        "signals",
+        "created_at_utc"
+    ],
+    "properties": {
+        "feature_id": {
+            "type": "string",
+            "description": "Globally unique image feature identifier"
+        },
+        "feature_version": {
+            "type": "string",
+            "description": "Immutable feature version identifier"
+        },
+        "schema_version": {
+            "type": "string",
+            "description": "Version of this image feature schema"
+        },
+        "owner_role": {
+            "type": "string",
+            "description": "Governance owner role (e.g. DATA_ENGINEERING, RISK, TRUST_INTELLIGENCE)"
+        },
+        "feature_type": {
+            "type": "string",
+            "enum": [
+                "IMAGE"
+            ],
+            "description": "Feature modality (fixed to IMAGE)"
+        },
+        "image_metadata": {
+            "type": "object",
+            "required": [
+                "image_hash",
+                "source_type"
+            ],
+            "properties": {
+                "image_hash": {
+                    "type": "string",
+                    "description": "Deterministic hash of image binary or fingerprint"
+                },
+                "source_type": {
+                    "type": "string",
+                    "enum": [
+                        "UPLOADED",
+                        "CRAWLED",
+                        "EXTERNAL_REFERENCE"
+                    ],
+                    "description": "Origin of the image"
+                },
+                "exif_present": {
+                    "type": "boolean",
+                    "description": "Whether EXIF metadata is present"
+                },
+                "width_px": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Image width in pixels"
+                },
+                "height_px": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Image height in pixels"
+                }
+            },
+            "additionalProperties": false
+        },
+        "signals": {
+            "type": "array",
+            "minItems": 0,
+            "description": "List of image-derived signals (descriptive only)",
+            "items": {
+                "type": "object",
+                "required": [
+                    "signal_type",
+                    "signal_hash"
+                ],
+                "properties": {
+                    "signal_type": {
+                        "type": "string",
+                        "description": "Type of image signal (e.g. DUPLICATE_DETECTION, GEO_MATCH, AI_GENERATED_PROBABILITY)"
+                    },
+                    "signal_value": {
+                        "type": [
+                            "string",
+                            "number",
+                            "boolean"
+                        ],
+                        "description": "Descriptive signal output (non-decisive)"
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": [
+                            "LOW",
+                            "MEDIUM",
+                            "HIGH"
+                        ],
+                        "description": "Descriptive severity hint (no workflow authority)"
+                    },
+                    "signal_hash": {
+                        "type": "string",
+                        "description": "Deterministic hash of the signal payload"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "created_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Schema creation timestamp (UTC, ISO-8601)"
+        },
+        "governance_notes": {
+            "type": "string",
+            "description": "Optional audit or governance notes"
+        }
+    },
+    "additionalProperties": false
+}

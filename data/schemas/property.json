@@ -1,1 +1,189 @@
-{}
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Vietnam Real Estate Property Schema",
+    "description": "Cấu trúc chuẩn cho một BĐS tại Việt Nam phục vụ định giá AI",
+    "type": "object",
+    "required": [
+        "property_id",
+        "address",
+        "legal_info",
+        "land_attributes",
+        "construction_attributes"
+    ],
+    "properties": {
+        "property_id": {
+            "type": "string",
+            "description": "UUID duy nhất của BĐS"
+        },
+        "data_source": {
+            "type": "string",
+            "enum": [
+                "listing",
+                "bank_internal",
+                "field_survey"
+            ]
+        },
+        "address": {
+            "type": "object",
+            "properties": {
+                "full_text": {
+                    "type": "string",
+                    "description": "Địa chỉ đầy đủ hiển thị"
+                },
+                "street": {
+                    "type": "string"
+                },
+                "ward": {
+                    "type": "string",
+                    "description": "Phường/Xã"
+                },
+                "district": {
+                    "type": "string",
+                    "description": "Quận/Huyện"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Tỉnh/Thành phố"
+                },
+                "coordinates": {
+                    "type": "object",
+                    "properties": {
+                        "lat": {
+                            "type": "number"
+                        },
+                        "lng": {
+                            "type": "number"
+                        }
+                    }
+                }
+            }
+        },
+        "legal_info": {
+            "type": "object",
+            "description": "Hồ sơ pháp lý - Yếu tố quan trọng nhất tại VN",
+            "properties": {
+                "certificate_type": {
+                    "type": "string",
+                    "enum": [
+                        "so_do",
+                        "so_hong",
+                        "giay_tay",
+                        "hd_mua_ban",
+                        "dang_cho_cap",
+                        "khong_co"
+                    ]
+                },
+                "certificate_id": {
+                    "type": "string",
+                    "description": "Số vào sổ cấp GCN"
+                },
+                "issue_date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "zoning_status": {
+                    "type": "string",
+                    "enum": [
+                        "dat_o",
+                        "quy_hoach_treo",
+                        "dat_nong_nghiep",
+                        "dat_thuong_mai",
+                        "tranh_chap"
+                    ]
+                },
+                "is_disputed": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Có đang tranh chấp/kiện tụng không"
+                }
+            }
+        },
+        "land_attributes": {
+            "type": "object",
+            "properties": {
+                "area_total_m2": {
+                    "type": "number",
+                    "description": "Diện tích đất công nhận trên sổ"
+                },
+                "area_usage_m2": {
+                    "type": "number",
+                    "description": "Diện tích thực tế sử dụng"
+                },
+                "width_m": {
+                    "type": "number",
+                    "description": "Mặt tiền (mét)"
+                },
+                "length_m": {
+                    "type": "number",
+                    "description": "Chiều dài (mét)"
+                },
+                "shape": {
+                    "type": "string",
+                    "enum": [
+                        "vuong_vuc",
+                        "nop_hau",
+                        "top_hau",
+                        "chu_l",
+                        "hinh_thang",
+                        "meo_mo"
+                    ]
+                },
+                "location_type": {
+                    "type": "string",
+                    "enum": [
+                        "mat_pho",
+                        "mat_ngo_oto",
+                        "mat_ngo_xe_may",
+                        "phan_lo_lien_ke"
+                    ]
+                },
+                "alley_width_m": {
+                    "type": "number",
+                    "description": "Độ rộng ngõ lớn nhất dẫn vào nhà"
+                },
+                "distance_to_main_road_m": {
+                    "type": "number"
+                }
+            }
+        },
+        "construction_attributes": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "nha_rieng",
+                        "chung_cu",
+                        "biet_thu",
+                        "dat_nen"
+                    ]
+                },
+                "num_floors": {
+                    "type": "integer"
+                },
+                "num_bedrooms": {
+                    "type": "integer"
+                },
+                "floor_area_total_m2": {
+                    "type": "number",
+                    "description": "Tổng diện tích sàn xây dựng"
+                },
+                "construction_year": {
+                    "type": "integer"
+                },
+                "quality_remaining_percent": {
+                    "type": "number",
+                    "description": "Chất lượng còn lại (ví dụ 85%)"
+                },
+                "furniture_status": {
+                    "type": "string",
+                    "enum": [
+                        "tho",
+                        "co_ban",
+                        "full_noi_that"
+                    ]
+                }
+            }
+        }
+    }
+}

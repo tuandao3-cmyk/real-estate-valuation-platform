@@ -1,0 +1,125 @@
+policy_id: VALUATION_ACCEPTANCE_V1
+schema_version: "1.0.0"
+status: ACTIVE
+
+description: >
+  Final acceptance gate for valuation results.
+  Determines whether a valuation artifact is eligible
+  for external consumption based on human approval
+  and workflow completion state only.
+
+# -------------------------------------------------
+# INPUT CONTRACT (READ-ONLY)
+# -------------------------------------------------
+inputs:
+  valuation_dossier:
+    required: true
+    read_only: true
+
+  decision_result:
+    required: true
+    read_only: true
+
+  approval_log:
+    required: true
+    read_only: true
+
+# -------------------------------------------------
+# ACCEPTANCE CONDITIONS (NON-COMPUTATIONAL)
+# -------------------------------------------------
+acceptance_conditions:
+  dossier_integrity:
+    description: Valuation dossier must be valid and immutable
+    required_fields:
+      - dossier_id
+      - valuation_hash
+      - trace_id
+    immutable: true
+
+  decision_projection:
+    description: Decision must be a pure projection from dossier
+    constraints:
+      - references_valuation_hash: true
+      - no_computed_fields: true
+
+  human_approval:
+    description: Human sign-off is mandatory
+    required:
+      - approval_log.exists == true
+      - approval_log.final_status in [APPROVED, REJECTED]
+      - approval_log.human_signatures >= 1
+    maker_checker:
+      enforced: true
+
+# -------------------------------------------------
+# ACCEPTANCE OUTCOMES (WORKFLOW ONLY)
+# -------------------------------------------------
+outputs:
+  valuation_accepted:
+    type: boolean
+    description: >
+      Indicates whether valuation is eligible
+      for downstream system consumption.
+    derived_from:
+      - dossier_integrity
+      - decision_projection
+      - human_approval
+
+  acceptance_status:
+    enum:
+      - ACCEPTED
+      - NOT_ACCEPTED
+    description: >
+      ACCEPTED only when all acceptance conditions are met.
+      NOT_ACCEPTED otherwise.
+
+  blocking_reason:
+    type: string
+    nullable: true
+    description: >
+      Human-readable reason for non-acceptance.
+      Must reference missing or invalid artifacts only.
+
+# -------------------------------------------------
+# EXPLICIT PROHIBITIONS
+# -------------------------------------------------
+prohibitions:
+  - must_not_compute_price
+  - must_not_apply_confidence_rules
+  - must_not_apply_risk_rules
+  - must_not_override_human_decision
+  - must_not_create_or_modify_decision
+  - must_not_exist_without_valuation_dossier
+  - must_not_invoke_ml_or_llm
+
+# -------------------------------------------------
+# AUDIT & GOVERNANCE
+# -------------------------------------------------
+audit:
+  trace_id: REQUIRED
+  valuation_hash: REQUIRED
+  decision_hash: REQUIRED
+  approval_hash: REQUIRED
+  reproducible: true
+  versioned_policy: true
+  change_log_required: true
+
+# -------------------------------------------------
+# RELATIONSHIP TO OTHER ARTIFACTS
+# -------------------------------------------------
+relationships:
+  valuation_dossier.json: "Single Source of Truth"
+  decision_result.json: "Decision Projection"
+  approval_log.json: "Human Authority Record"
+  confidence_threshold.yaml: "Upstream workflow gating only"
+  risk_band_rules.yaml: "Upstream workflow routing only"
+
+# -------------------------------------------------
+# INTERPRETATION RULE
+# -------------------------------------------------
+interpretation:
+  default: DENY
+  rule: >
+    If acceptance is not explicitly satisfied
+    by human approval and valid dossier linkage,
+    the valuation is NOT ACCEPTED by definition.

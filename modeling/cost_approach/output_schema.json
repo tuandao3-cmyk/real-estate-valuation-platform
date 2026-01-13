@@ -1,0 +1,95 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "model/cost_approach/output_schema.json",
+    "title": "Cost Approach Output Schema",
+    "description": "Descriptive cost-based valuation reference. NON-DECISIVE. NOT a final market value.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "replacement_cost_new",
+        "depreciation_factor",
+        "depreciated_structure_cost",
+        "land_value_reference",
+        "total_cost_reference",
+        "audit_hash",
+        "governance"
+    ],
+    "properties": {
+        "replacement_cost_new": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Replacement cost new (RCN) of the structure. Reference only."
+        },
+        "depreciation_factor": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Applied depreciation factor derived from static depreciation curve."
+        },
+        "depreciated_structure_cost": {
+            "type": "number",
+            "minimum": 0,
+            "description": "RCN after depreciation. Arithmetic output only."
+        },
+        "land_value_reference": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Land value reference from approved source. Not inferred."
+        },
+        "total_cost_reference": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Total cost reference = depreciated structure cost + land value reference. NOT a final valuation."
+        },
+        "audit_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "Deterministic SHA-256 hash for audit, replay and dispute resolution."
+        },
+        "governance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "model_type",
+                "decision_authority",
+                "usage_restrictions",
+                "version"
+            ],
+            "properties": {
+                "model_type": {
+                    "type": "string",
+                    "enum": [
+                        "COST_APPROACH_REFERENCE"
+                    ],
+                    "description": "Explicit declaration of model role."
+                },
+                "decision_authority": {
+                    "type": "string",
+                    "enum": [
+                        "NONE"
+                    ],
+                    "description": "Cost approach output has zero decision authority."
+                },
+                "usage_restrictions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "NOT_FINAL_VALUE",
+                            "ENSEMBLE_ONLY",
+                            "HUMAN_REVIEW_REQUIRED",
+                            "NO_RULE_OVERRIDE",
+                            "NO_AUTO_APPROVAL"
+                        ]
+                    },
+                    "description": "Hard governance constraints for downstream usage."
+                },
+                "version": {
+                    "type": "string",
+                    "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$",
+                    "description": "Schema version. MUST be bumped on any change."
+                }
+            }
+        }
+    }
+}

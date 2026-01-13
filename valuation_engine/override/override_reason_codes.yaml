@@ -1,0 +1,143 @@
+# override_reason_codes.yaml
+# 🚫 DO NOT MODIFY WITHOUT GOVERNANCE APPROVAL
+# Role: Canonical Override Reason Registry (Schema-only)
+# Risk: NHÓM A – Legal / Audit / Human Authority Control
+
+version: "1.0.0"
+status: "LOCKED"
+governance_level: "LEGAL_APPROVED"
+
+description: >
+  Canonical, governance-approved list of override reason codes.
+  These codes define the ONLY acceptable justifications for human override
+  within the valuation workflow.
+
+  This file is STATIC and NON-COMPUTATIONAL.
+  It does not evaluate, decide, or approve overrides.
+  It only enumerates allowed reason codes for audit and legal traceability.
+
+core_principles:
+  - valuation_dossier.json is the Single Source of Truth
+  - Human authority only
+  - No inference, no computation, no auto-approval
+  - If conflict arises: valuation_dossier.json OVERRIDES ALL
+
+usage_constraints:
+  allowed_used_by:
+    - approval_log.json
+    - override_policy.md
+    - valuation_trace.py
+    - decision_explainer.py
+  forbidden_used_by:
+    - model
+    - rule_engine_decision_logic
+    - confidence_calculation
+    - risk_scoring
+    - LLM_reasoning
+    - UI_free_text_validation
+
+override_reason_codes:
+  MARKET_ANOMALY_CONFIRMED:
+    category: "MARKET"
+    description: >
+      Verified market anomaly not reasonably capturable by models
+      (e.g., abnormal transaction conditions, forced sales distortion).
+    allowed_roles:
+      - SENIOR_APPRAISER
+      - CREDIT_COMMITTEE
+    requires_evidence: true
+    affects:
+      - workflow_routing
+    forbidden_effects:
+      - price_change
+      - model_output_modification
+
+  LEGAL_CONTEXT_NOT_CAPTURABLE_BY_MODEL:
+    category: "LEGAL"
+    description: >
+      Legal or regulatory context materially affecting valuation
+      that cannot be encoded into models or rules.
+    allowed_roles:
+      - LEGAL_OFFICER
+      - CREDIT_COMMITTEE
+    requires_evidence: true
+    affects:
+      - workflow_routing
+      - escalation_level
+    forbidden_effects:
+      - confidence_override
+      - risk_recalculation
+
+  DATA_LATENCY_ACKNOWLEDGED:
+    category: "DATA"
+    description: >
+      Known and acknowledged delay or incompleteness in external data sources
+      that impacts interpretation but not data integrity.
+    allowed_roles:
+      - APPRAISER
+      - SENIOR_APPRAISER
+    requires_evidence: false
+    affects:
+      - workflow_continuation
+    forbidden_effects:
+      - dossier_modification
+      - model_retraining
+
+  COURT_PRECEDENT_APPLIED:
+    category: "LEGAL"
+    description: >
+      Binding court precedent or official authority guidance
+      applied to the valuation context.
+    allowed_roles:
+      - LEGAL_OFFICER
+      - RISK_COMMITTEE
+    requires_evidence: true
+    affects:
+      - escalation_level
+      - final_acceptance_authority
+    forbidden_effects:
+      - price_adjustment
+      - ensemble_override
+
+  CREDIT_POLICY_EXCEPTION_APPROVED:
+    category: "CREDIT"
+    description: >
+      Explicit, documented exception to standard credit policy
+      approved by the authorized committee.
+    allowed_roles:
+      - CREDIT_COMMITTEE
+      - RISK_COMMITTEE
+    requires_evidence: true
+    affects:
+      - workflow_routing
+    forbidden_effects:
+      - valuation_logic_change
+      - confidence_score_change
+
+validation_rules:
+  - override_reason_code MUST exist in this file
+  - override_reason_code MUST match actor role authorization
+  - missing or unknown code => OVERRIDE INVALID
+  - free-text explanation is OPTIONAL and NON-BINDING
+
+audit_guarantees:
+  deterministic: true
+  reproducible: true
+  immutable_reference: true
+  legal_defensible: true
+
+change_management:
+  change_requires:
+    - version_bump
+    - written_rationale
+    - legal_review
+    - audit_approval
+  silent_change: FORBIDDEN
+
+final_statement: >
+  Override reasons are not opinions.
+  They are legally bounded justifications.
+  Anything outside this list is non-compliant by definition.
+
+# 🛑 END OF override_reason_codes.yaml
+# 🛑 GOVERNANCE LOCKED

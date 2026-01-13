@@ -1,0 +1,103 @@
+# model/income_approach/cap_rate_table.yaml
+# GOVERNANCE LOCKED – STATIC REFERENCE TABLE
+# Cap Rate ≠ Market Forecast ≠ Valuation Decision
+
+version: v1.0.0
+status: ACTIVE
+governance_role: INCOME_REFERENCE_ONLY
+decision_authority: NONE
+
+description: >
+  Static capitalization rate reference table used to support
+  Income Approach valuation when explicitly approved by
+  activation rules. This table does NOT determine value,
+  risk band, or investment attractiveness.
+
+general_principles:
+  - CAP_RATE_IS_REFERENCE_ONLY
+  - NOT_MARKET_PREDICTION
+  - NOT_OPTIMIZED_FOR_RETURN
+  - HUMAN_JUDGMENT_REQUIRED
+  - NO_AUTOMATIC_SELECTION
+
+applicability:
+  allowed_asset_types:
+    - RENTAL
+    - COMMERCIAL
+    - MIXED_USE
+  excluded_asset_types:
+    - OWNER_OCCUPIED_ONLY
+    - SPECIAL_PURPOSE
+    - AGRICULTURAL
+
+cap_rate_table:
+  residential_rental:
+    low_risk_reference:
+      min: 0.045
+      max: 0.055
+    medium_risk_reference:
+      min: 0.055
+      max: 0.07
+    high_risk_reference:
+      min: 0.07
+      max: 0.09
+
+  commercial_office:
+    low_risk_reference:
+      min: 0.05
+      max: 0.065
+    medium_risk_reference:
+      min: 0.065
+      max: 0.08
+    high_risk_reference:
+      min: 0.08
+      max: 0.1
+
+  retail_property:
+    low_risk_reference:
+      min: 0.055
+      max: 0.07
+    medium_risk_reference:
+      min: 0.07
+      max: 0.09
+    high_risk_reference:
+      min: 0.09
+      max: 0.11
+
+  mixed_use_property:
+    low_risk_reference:
+      min: 0.05
+      max: 0.065
+    medium_risk_reference:
+      min: 0.065
+      max: 0.085
+    high_risk_reference:
+      min: 0.085
+      max: 0.11
+
+usage_constraints:
+  - CAP_RATE_CANNOT_BE_AUTO_SELECTED
+  - CAP_RATE_CANNOT_OVERRIDE_MARKET_EVIDENCE
+  - CAP_RATE_MUST_BE_CONFIRMED_BY_HUMAN
+  - CAP_RATE_USAGE_MUST_BE_LOGGED
+
+audit_requirements:
+  required_fields:
+    - version
+    - asset_type
+    - selected_range
+    - justification_text
+    - human_reviewer_id
+    - valuation_dossier_reference
+
+change_management:
+  version_bump_required: true
+  rationale_required: true
+  peer_review_required: true
+  silent_update_forbidden: true
+
+legal_disclaimer: >
+  Capitalization rates provided herein are generalized
+  reference ranges intended to assist professional
+  valuation judgment. They do not represent market
+  forecasts, guarantees, or investment recommendations.

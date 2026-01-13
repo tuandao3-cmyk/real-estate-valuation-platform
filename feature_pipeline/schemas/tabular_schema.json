@@ -1,0 +1,90 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Tabular Feature Schema",
+    "description": "Canonical schema for tabular features used across the feature pipeline. Governance-locked, non-decisive.",
+    "type": "object",
+    "required": [
+        "feature_id",
+        "feature_version",
+        "schema_version",
+        "owner_role",
+        "feature_type",
+        "columns",
+        "created_at_utc"
+    ],
+    "properties": {
+        "feature_id": {
+            "type": "string",
+            "description": "Globally unique feature identifier"
+        },
+        "feature_version": {
+            "type": "string",
+            "description": "Immutable feature version (semantic or hash-based)"
+        },
+        "schema_version": {
+            "type": "string",
+            "description": "Version of this tabular schema definition"
+        },
+        "owner_role": {
+            "type": "string",
+            "description": "Governance owner role (e.g. DATA_ENGINEERING, RISK, MODELING)"
+        },
+        "feature_type": {
+            "type": "string",
+            "enum": [
+                "TABULAR"
+            ],
+            "description": "Feature modality (fixed to TABULAR)"
+        },
+        "columns": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Ordered list of tabular columns",
+            "items": {
+                "type": "object",
+                "required": [
+                    "column_name",
+                    "data_type",
+                    "nullable"
+                ],
+                "properties": {
+                    "column_name": {
+                        "type": "string",
+                        "description": "Column name (snake_case, deterministic)"
+                    },
+                    "data_type": {
+                        "type": "string",
+                        "enum": [
+                            "string",
+                            "integer",
+                            "number",
+                            "boolean",
+                            "date",
+                            "datetime"
+                        ],
+                        "description": "Logical data type (no computation implied)"
+                    },
+                    "nullable": {
+                        "type": "boolean",
+                        "description": "Whether null values are allowed"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Human-readable description of the column"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "created_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Schema creation timestamp (UTC, ISO-8601)"
+        },
+        "governance_notes": {
+            "type": "string",
+            "description": "Optional governance or audit notes"
+        }
+    },
+    "additionalProperties": false
+}

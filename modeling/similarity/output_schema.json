@@ -1,0 +1,161 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://real-estate-ai-platform/schemas/modeling/similarity/output_schema.json",
+    "title": "Similarity Model Output Schema",
+    "description": "Canonical, non-decisive output schema for similarity and comparable-context models. Outputs are descriptive signals only and MUST NOT influence valuation directly.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "model_metadata",
+        "input_reference",
+        "similarity_context",
+        "limitations",
+        "audit"
+    ],
+    "properties": {
+        "model_metadata": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "model_name",
+                "model_type",
+                "model_version",
+                "model_role"
+            ],
+            "properties": {
+                "model_name": {
+                    "type": "string",
+                    "description": "Unique identifier of the similarity model"
+                },
+                "model_type": {
+                    "type": "string",
+                    "enum": [
+                        "SIMILARITY",
+                        "COMPARABLE_CONTEXT"
+                    ],
+                    "description": "Model classification"
+                },
+                "model_version": {
+                    "type": "string",
+                    "description": "Explicit version for reproducibility"
+                },
+                "model_role": {
+                    "type": "string",
+                    "description": "Human-readable description of model responsibility"
+                }
+            }
+        },
+        "input_reference": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "valuation_hash",
+                "feature_snapshot_hash",
+                "target_property_id"
+            ],
+            "properties": {
+                "valuation_hash": {
+                    "type": "string",
+                    "description": "Hash reference to valuation_dossier.json (SSOT)"
+                },
+                "feature_snapshot_hash": {
+                    "type": "string",
+                    "description": "Immutable feature snapshot used by similarity model"
+                },
+                "target_property_id": {
+                    "type": "string",
+                    "description": "Identifier of the subject property"
+                }
+            }
+        },
+        "similarity_context": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "context_type",
+                "comparables"
+            ],
+            "properties": {
+                "context_type": {
+                    "type": "string",
+                    "enum": [
+                        "PAIRWISE_CONTEXT",
+                        "CONTEXT_SET"
+                    ],
+                    "description": "Indicates single comparable or set-level context"
+                },
+                "comparables": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "comparable_property_id",
+                            "similarity_signals",
+                            "affinity_signals",
+                            "context_hash"
+                        ],
+                        "properties": {
+                            "comparable_property_id": {
+                                "type": "string",
+                                "description": "Identifier of the comparable property"
+                            },
+                            "similarity_signals": {
+                                "type": "object",
+                                "description": "Raw similarity signals (distance, size delta, age delta, etc.)",
+                                "additionalProperties": true
+                            },
+                            "affinity_signals": {
+                                "type": "object",
+                                "description": "Contextual affinity indicators (temporal, zoning, micro-market)",
+                                "additionalProperties": true
+                            },
+                            "context_hash": {
+                                "type": "string",
+                                "description": "Deterministic hash of the comparable context"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "limitations": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "string"
+            },
+            "description": "Explicit limitations of similarity output (mandatory for legal defensibility)"
+        },
+        "audit": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "created_at_utc",
+                "producer",
+                "reproducible",
+                "schema_version"
+            ],
+            "properties": {
+                "created_at_utc": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "producer": {
+                    "type": "string",
+                    "description": "System or module that produced this output"
+                },
+                "reproducible": {
+                    "type": "boolean",
+                    "const": true,
+                    "description": "Similarity outputs must always be reproducible"
+                },
+                "schema_version": {
+                    "type": "string",
+                    "description": "Version of this output schema"
+                }
+            }
+        }
+    }
+}

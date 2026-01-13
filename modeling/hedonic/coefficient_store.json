@@ -1,0 +1,83 @@
+{
+    "schema_version": "1.0",
+    "artifact_type": "hedonic_model_coefficients",
+    "governance_status": "IMMUTABLE",
+    "model_metadata": {
+        "model_id": "hedonic_base_vn_urban",
+        "model_family": "HEDONIC",
+        "model_version": "1.0.0",
+        "trained_at_utc": "2025-01-05T12:30:00Z",
+        "jurisdiction": "VN",
+        "asset_scope": [
+            "RESIDENTIAL_APARTMENT",
+            "RESIDENTIAL_HOUSE"
+        ]
+    },
+    "feature_reference": {
+        "feature_snapshot_hash": "ftr_snap_9c8a21d4e6b1",
+        "feature_catalog_version": "2025.01",
+        "dependency_declared": true
+    },
+    "coefficients": {
+        "intercept": {
+            "value": 0.4125,
+            "unit": "log_price",
+            "description": "Model intercept (log-linear space)"
+        },
+        "floor_area_sqm": {
+            "value": 0.0182,
+            "unit": "log_price_per_sqm",
+            "description": "Marginal effect of floor area"
+        },
+        "num_bedrooms": {
+            "value": 0.0675,
+            "unit": "log_price",
+            "description": "Bedroom count contribution"
+        },
+        "num_bathrooms": {
+            "value": 0.0541,
+            "unit": "log_price",
+            "description": "Bathroom count contribution"
+        },
+        "floor_level": {
+            "value": 0.0093,
+            "unit": "log_price",
+            "description": "Vertical position effect"
+        },
+        "building_age_years": {
+            "value": -0.0117,
+            "unit": "log_price_per_year",
+            "description": "Depreciation by building age"
+        },
+        "distance_to_cbd_km": {
+            "value": -0.0328,
+            "unit": "log_price_per_km",
+            "description": "Accessibility penalty"
+        },
+        "road_access_score": {
+            "value": 0.0214,
+            "unit": "log_price",
+            "description": "Descriptive accessibility context"
+        }
+    },
+    "coefficient_properties": {
+        "scale": "log-linear",
+        "regularization": "ridge",
+        "standardized_features": true,
+        "missing_value_handling": "pre-imputed_in_feature_pipeline"
+    },
+    "limitations": [
+        "Coefficients are estimated from historical data and may not reflect current market shifts.",
+        "Values are valid only for the declared feature snapshot and jurisdiction.",
+        "Coefficients must not be interpreted as causal effects.",
+        "This artifact does not imply model approval or valuation acceptance.",
+        "Any modification requires full retraining and version bump."
+    ],
+    "audit": {
+        "artifact_hash": "sha256:4b1a3e2d8c9f0d1e77b9a6c4e52fa1b0d5f87e6c9a2b3f4e8a1c9d2e3f4a5b6",
+        "created_by": "model_training_pipeline_v1",
+        "approved_by": "model_risk_committee",
+        "approval_reference": "MRC-2025-01-HE-001",
+        "immutable": true
+    }
+}

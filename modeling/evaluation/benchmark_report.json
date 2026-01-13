@@ -1,0 +1,85 @@
+{
+    "report_metadata": {
+        "report_id": "benchmark_2026Q1_001",
+        "created_at_utc": "2026-01-11T15:30:00Z",
+        "report_type": "OFFLINE_MODEL_BENCHMARK",
+        "purpose": "Descriptive comparison of model evaluation metrics for human review",
+        "generated_by": "model/evaluation pipeline",
+        "governance_note": "This report is descriptive only and has no approval or activation authority."
+    },
+    "dataset_context": {
+        "dataset_id": "historical_sales_snapshot_v5",
+        "time_range": {
+            "from": "2024-01-01",
+            "to": "2025-12-31"
+        },
+        "n_samples": 12450,
+        "jurisdiction": "VN",
+        "asset_scope": [
+            "RESIDENTIAL",
+            "LAND"
+        ]
+    },
+    "benchmark_models": [
+        {
+            "model_id": "hedonic_v3",
+            "model_version": "3.1.0",
+            "model_family": "HEDONIC_REGRESSION",
+            "feature_snapshot_hash": "a9c4e7b12f...",
+            "evaluation_summary": {
+                "metrics": {
+                    "mae": 215000000,
+                    "rmse": 342000000,
+                    "mape": 0.118,
+                    "r2": 0.71
+                },
+                "stability_indicators": {
+                    "mean_shift": -12000000,
+                    "std_shift": 54000000,
+                    "mean_absolute_shift": 43000000
+                }
+            },
+            "notes": "Metrics shown for descriptive comparison only."
+        },
+        {
+            "model_id": "tier_regression_mid",
+            "model_version": "2.0.4",
+            "model_family": "TIER_BASED_REGRESSION",
+            "feature_snapshot_hash": "bf82aa901c...",
+            "evaluation_summary": {
+                "metrics": {
+                    "mae": 238000000,
+                    "rmse": 361000000,
+                    "mape": 0.131,
+                    "r2": 0.68
+                },
+                "stability_indicators": {
+                    "mean_shift": 8000000,
+                    "std_shift": 61000000,
+                    "mean_absolute_shift": 47000000
+                }
+            },
+            "notes": "Tier-restricted model; results not directly comparable for approval."
+        }
+    ],
+    "cross_model_observations": {
+        "comparison_scope": "Descriptive only",
+        "limitations": [
+            "Different model families may serve different routing purposes",
+            "Metric differences do not imply model superiority",
+            "No statistical significance testing performed"
+        ]
+    },
+    "audit_trail": {
+        "backtest_runner_version": "1.0.0",
+        "metrics_definition_ref": "model/evaluation/metrics_regression.py",
+        "stability_check_ref": "model/evaluation/stability_check.py",
+        "reproducible": true
+    },
+    "explicit_disclaimers": [
+        "This report does not authorize model activation or retirement.",
+        "No ranking or winner selection is implied.",
+        "All interpretations must be performed by qualified human reviewers.",
+        "Use of this report in production valuation is prohibited."
+    ]
+}

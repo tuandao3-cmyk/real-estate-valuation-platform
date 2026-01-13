@@ -1,1 +1,122 @@
-{}
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Listing",
+    "description": "Canonical schema representing a property listing as declared by a source (agent, platform, owner). A listing is a market signal, NOT a verified fact and NOT a valuation. Listing data is subject to trust, fraud, and verification models. valuation_dossier.json remains the Single Source of Truth.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "listing_id",
+        "property_id",
+        "source",
+        "listing_type",
+        "listed_price",
+        "currency",
+        "listed_at_utc",
+        "jurisdiction"
+    ],
+    "properties": {
+        "listing_id": {
+            "type": "string",
+            "description": "Unique identifier of the listing within the system or source platform."
+        },
+        "property_id": {
+            "type": "string",
+            "description": "Reference to the related property record. No assumption of correctness is made."
+        },
+        "source": {
+            "type": "object",
+            "description": "Declared source of the listing. Source credibility is assessed elsewhere.",
+            "additionalProperties": false,
+            "required": [
+                "source_name",
+                "source_type"
+            ],
+            "properties": {
+                "source_name": {
+                    "type": "string",
+                    "description": "Name of the listing source (platform, agency, individual)."
+                },
+                "source_type": {
+                    "type": "string",
+                    "enum": [
+                        "BROKER",
+                        "PLATFORM",
+                        "OWNER",
+                        "AGENCY",
+                        "OTHER"
+                    ],
+                    "description": "Declared category of the listing source."
+                }
+            }
+        },
+        "listing_type": {
+            "type": "string",
+            "enum": [
+                "SALE",
+                "RENT",
+                "LEASE",
+                "OTHER"
+            ],
+            "description": "Declared listing intent. Used for workflow routing only."
+        },
+        "listed_price": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Declared asking price. This is NOT a transaction price and NOT a valuation."
+        },
+        "currency": {
+            "type": "string",
+            "description": "Currency code of the listed price (e.g., VND)."
+        },
+        "price_negotiable_declared": {
+            "type": "boolean",
+            "description": "Whether the listing declares the price as negotiable."
+        },
+        "listing_description": {
+            "type": "string",
+            "description": "Free-text description provided by the listing source. Subject to text analysis and fraud detection."
+        },
+        "media_refs": {
+            "type": "array",
+            "description": "References to images or media associated with the listing. Media content is analyzed separately.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "listed_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp when the listing was published."
+        },
+        "listing_status": {
+            "type": "string",
+            "enum": [
+                "ACTIVE",
+                "INACTIVE",
+                "REMOVED",
+                "UNKNOWN"
+            ],
+            "description": "Declared current status of the listing."
+        },
+        "jurisdiction": {
+            "type": "string",
+            "description": "Legal jurisdiction applicable to this listing (e.g., VN)."
+        },
+        "data_provenance": {
+            "type": "object",
+            "description": "Metadata describing how and when the listing data was ingested.",
+            "additionalProperties": false,
+            "properties": {
+                "ingested_from": {
+                    "type": "string",
+                    "description": "System or channel from which the listing was ingested."
+                },
+                "collected_at_utc": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "UTC timestamp when the listing data was collected."
+                }
+            }
+        }
+    }
+}

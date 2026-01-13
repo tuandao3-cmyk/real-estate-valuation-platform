@@ -1,0 +1,103 @@
+{
+    "schema_version": "tier_models_output_schema_v1.0.0",
+    "artifact_type": "TIER_MODEL_OUTPUT_CONTRACT",
+    "governance_level": "NHÓM A – DECISION LEAKAGE CONTROL",
+    "description": "Canonical output schema for tier models. Outputs are descriptive, non-decisional, and workflow-support only.",
+    "allowed_tiers": [
+        "LOW",
+        "MID",
+        "HIGH"
+    ],
+    "common_fields": {
+        "tier": {
+            "type": "string",
+            "enum": [
+                "LOW",
+                "MID",
+                "HIGH"
+            ],
+            "description": "Tier selected by tier_classifier for workflow routing only"
+        },
+        "model_version": {
+            "type": "string",
+            "description": "Immutable model version identifier"
+        },
+        "input_hash": {
+            "type": "string",
+            "description": "Deterministic hash of read-only input signals for audit & reproducibility"
+        },
+        "created_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp of tier model execution"
+        }
+    },
+    "tier_specific_outputs": {
+        "LOW": {
+            "type": "object",
+            "description": "Tier LOW output – minimal review intensity indicator",
+            "properties": {
+                "review_intensity_score": {
+                    "type": "number",
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "Descriptive indicator of human review effort. NOT confidence, NOT approval."
+                }
+            },
+            "required": [
+                "review_intensity_score"
+            ]
+        },
+        "MID": {
+            "type": "object",
+            "description": "Tier MID output – moderate review intensity indicator",
+            "properties": {
+                "review_intensity_score": {
+                    "type": "number",
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "Descriptive indicator of increased human review effort. NOT risk score."
+                }
+            },
+            "required": [
+                "review_intensity_score"
+            ]
+        },
+        "HIGH": {
+            "type": "object",
+            "description": "Tier HIGH output – escalation intensity indicator",
+            "properties": {
+                "escalation_intensity_score": {
+                    "type": "number",
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "Descriptive indicator for escalation / senior review. NOT approval or rejection."
+                }
+            },
+            "required": [
+                "escalation_intensity_score"
+            ]
+        }
+    },
+    "explicitly_forbidden_fields": [
+        "price",
+        "valuation_amount",
+        "market_value",
+        "confidence_score",
+        "approval_decision",
+        "rejection_decision",
+        "recommendation",
+        "threshold",
+        "action_hint",
+        "auto_escalate",
+        "auto_approve"
+    ],
+    "governance_guarantees": {
+        "deterministic": true,
+        "non_decisional": true,
+        "audit_ready": true,
+        "reproducible": true,
+        "human_authority_preserved": true
+    },
+    "legal_disclaimer": "Tier model outputs are workflow-support indicators only. They do not constitute valuation, risk judgment, approval, or professional opinion."
+}

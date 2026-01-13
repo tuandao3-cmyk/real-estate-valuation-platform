@@ -1,0 +1,141 @@
+# ============================================================
+# MODEL ACTIVATION RULES – ADVANCED AVM
+# File: modeling/registry/model_activation_rules.yaml
+#
+# LEGAL STATUS:
+# - Governance & compliance artifact
+# - Defines NECESSARY CONDITIONS for model execution
+# - Does NOT imply approval, selection, or weighting
+#
+# MASTER_SPEC COMPLIANCE:
+# - No implicit activation
+# - No auto-fallback models
+# - Human & override always have veto power
+# - valuation_dossier.json overrides all
+# ============================================================
+
+rules_version: "1.0.0"
+last_updated: "2026-01-11"
+owner: "Model Risk Management (MRM)"
+
+# ------------------------------------------------------------
+# GLOBAL ACTIVATION GUARDS (APPLY TO ALL MODELS)
+# ------------------------------------------------------------
+global_guards:
+  valuation_snapshot_required: true
+  immutable_input_required: true
+  min_data_quality_score: 0.70
+  allow_activation_if_overridden: false
+  allow_llm_trigger: false
+
+  hard_blocks:
+    - condition: "valuation_dossier.override.active == true"
+      reason_code: "OVERRIDE_PRESENT"
+
+    - condition: "valuation_dossier.compliance_block == true"
+      reason_code: "COMPLIANCE_BLOCK"
+
+    - condition: "valuation_dossier.data_quality.is_valid == false"
+      reason_code: "DATA_QUALITY_FAIL"
+
+# ------------------------------------------------------------
+# MODEL-SPECIFIC ACTIVATION RULES
+# ------------------------------------------------------------
+model_rules:
+  # ==========================================================
+  # HEDONIC TABULAR MODEL
+  # ==========================================================
+  hedonic_tabular_v1:
+    activation_required: true
+
+    prerequisites:
+      feature_coverage:
+        required_featureset: "tabular_core_v1"
+        min_coverage_ratio: 0.85
+
+      data_quality:
+        min_score: 0.75
+        forbid_flags:
+          - "OUTDATED_MARKET_DATA"
+          - "MISSING_LOCATION_PRECISION"
+
+      jurisdiction:
+        allowed:
+          - "VN"
+
+    blocks:
+      - condition: "valuation_dossier.property_type == 'special_asset'"
+        reason_code: "UNSUPPORTED_PROPERTY_TYPE"
+
+    activation_log:
+      on_pass: "HEDONIC_MODEL_ACTIVATED"
+      on_fail: "HEDONIC_MODEL_BLOCKED"
+
+  # ==========================================================
+  # COMPARABLE SALES MODEL
+  # ==========================================================
+  comparable_sales_v1:
+    activation_required: true
+
+    prerequisites:
+      comparables:
+        min_count: 3
+        max_radius_km: 5
+        max_age_months: 12
+
+      data_quality:
+        min_score: 0.80
+        forbid_flags:
+          - "LOW_COMPARABLE_CONFIDENCE"
+
+      jurisdiction:
+        allowed:
+          - "VN"
+
+    blocks:
+      - condition: "valuation_dossier.market_liquidity == 'low'"
+        reason_code: "INSUFFICIENT_MARKET_LIQUIDITY"
+
+    activation_log:
+      on_pass: "COMPARABLE_MODEL_ACTIVATED"
+      on_fail: "COMPARABLE_MODEL_BLOCKED"
+
+  # ==========================================================
+  # COST APPROACH MODEL
+  # ==========================================================
+  cost_approach_v1:
+    activation_required: false
+    fallback_only: true
+
+    prerequisites:
+      construction_data:
+        replacement_cost_available: true
+        depreciation_model_available: true
+
+      data_quality:
+        min_score: 0.70
+
+      jurisdiction:
+        allowed:
+          - "VN"
+
+    blocks:
+      - condition: "valuation_dossier.property_age > 50"
+        reason_code: "DEPRECIATION_UNRELIABLE"
+
+    activation_log:
+      on_pass: "COST_MODEL_ACTIVATED"
+      on_fail: "COST_MODEL_BLOCKED"
+
+# ------------------------------------------------------------
+# ENFORCEMENT NOTES (NON-NEGOTIABLE)
+# ------------------------------------------------------------
+enforcement_notes:
+  - "Passing activation rules does NOT imply inclusion in ensemble"
+  - "Activation only grants permission to run inference"
+  - "Failure to activate must be logged with reason_code"
+  - "Human override can block any model regardless of rule outcome"
+  - "Rules are deterministic and non-learning"
+# ============================================================
+# END OF MODEL ACTIVATION RULES
+# ============================================================

@@ -1,0 +1,42 @@
+{
+    "audit_log_metadata": {
+        "log_name": "feature_drift_audit_log",
+        "log_version": "1.0",
+        "governance_standard": "MASTER_SPEC.md",
+        "description": "Immutable audit log for feature drift observations. Descriptive only. No decisions recorded.",
+        "append_only": true,
+        "created_at_utc": "2026-01-10T00:00:00Z"
+    },
+    "drift_events": [
+        {
+            "event_id": "drift_evt_20260110_0001",
+            "event_timestamp_utc": "2026-01-10T10:15:42Z",
+            "data_snapshot_id": "snapshot_20260110_001",
+            "model_version": "avm_core_v3.2.1",
+            "feature_name": "distance_to_city_center",
+            "metric_type": "PSI",
+            "metric_value": 0.18,
+            "reference_window": "2025-09-01_to_2025-11-30",
+            "comparison_window": "2025-12-01_to_2025-12-31",
+            "source_module": "feature_pipeline.drift.psi_calculator",
+            "report_id": "feature-drift-report-20260110101530",
+            "recorded_by": "system",
+            "notes": "Metric recorded for monitoring. No interpretation or classification applied."
+        },
+        {
+            "event_id": "drift_evt_20260110_0002",
+            "event_timestamp_utc": "2026-01-10T10:15:42Z",
+            "data_snapshot_id": "snapshot_20260110_001",
+            "model_version": "avm_core_v3.2.1",
+            "feature_name": "legal_status_encoded",
+            "metric_type": "KS_STATISTIC",
+            "metric_value": 0.11,
+            "reference_window": "2025-09-01_to_2025-11-30",
+            "comparison_window": "2025-12-01_to_2025-12-31",
+            "source_module": "feature_pipeline.drift.ks_test",
+            "report_id": "feature-drift-report-20260110101530",
+            "recorded_by": "system",
+            "notes": "Captured as part of routine drift logging. Human review required if needed."
+        }
+    ]
+}

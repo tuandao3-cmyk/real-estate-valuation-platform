@@ -1,0 +1,98 @@
+{
+    "schema_name": "OverrideAuditLog",
+    "schema_version": "1.0.0",
+    "status": "LOCKED",
+    "risk_classification": "NHÓM A – Legal / Audit / Human Authority Evidence",
+    "role_definition": {
+        "role": "Canonical Override Audit Log",
+        "description": "Append-only audit artifact recording factual override-related events performed by authorized humans. This file serves as legal and audit evidence only.",
+        "not_a_decision": true,
+        "not_a_workflow_controller": true
+    },
+    "core_principles": [
+        "valuation_dossier.json is the Single Source of Truth",
+        "Human authority only",
+        "Read-only reference to other artifacts",
+        "No inference, no computation, no decision",
+        "If conflict arises: valuation_dossier.json OVERRIDES ALL"
+    ],
+    "immutability_guarantees": {
+        "append_only": true,
+        "immutable": true,
+        "tamper_evident": true,
+        "reproducible": true,
+        "court_defensible": true
+    },
+    "required_references": {
+        "valuation_hash": "SHA-256 hash of valuation_dossier.json",
+        "trace_id": "Canonical workflow trace identifier"
+    },
+    "override_audit_entries": [
+        {
+            "override_event_id": "uuid-v4",
+            "valuation_hash": "string",
+            "trace_id": "string",
+            "actor": {
+                "actor_id": "string",
+                "actor_role": "APPRAISER | SENIOR_APPRAISER | CREDIT_OFFICER | MANAGER | COMMITTEE_MEMBER",
+                "human_verified": true
+            },
+            "override_request": {
+                "override_reason_code": "CANONICAL_CODE_FROM_override_reason_codes.yaml",
+                "commentary": "string (optional, non-binding)",
+                "evidence_refs": {
+                    "document_id": "string",
+                    "reference_type": "LEGAL | MARKET | INTERNAL_POLICY"
+                }
+            },
+            "override_scope": {
+                "scope_type": "WORKFLOW_ROUTING | ESCALATION_ONLY | FINAL_ACCEPTANCE",
+                "price_affected": false,
+                "risk_affected": false,
+                "confidence_affected": false
+            },
+            "governance_validation": {
+                "maker_checker_enforced": true,
+                "separation_of_duties_verified": true,
+                "rejection_gate_passed": true
+            },
+            "timestamps": {
+                "requested_at_utc": "ISO-8601",
+                "recorded_at_utc": "ISO-8601"
+            },
+            "hashes": {
+                "override_request_hash": "SHA-256",
+                "approval_log_hash": "SHA-256 (if applicable)",
+                "reproducibility_hash": "SHA-256"
+            }
+        }
+    ],
+    "explicit_prohibitions": [
+        "No AI-generated entries",
+        "No system or rule-engine actors",
+        "No modification of valuation_dossier",
+        "No price, risk, or confidence recalculation",
+        "No free-text logic evaluation"
+    ],
+    "audit_usage": {
+        "intended_for": [
+            "Internal Audit",
+            "External Audit (Big4)",
+            "Bank Governance Review",
+            "Legal Dispute Resolution",
+            "Regulatory Inspection"
+        ],
+        "not_intended_for": [
+            "Credit decision automation",
+            "Valuation decision making",
+            "Model training or feedback"
+        ]
+    },
+    "change_management": {
+        "version_bump_required": true,
+        "legal_review_required": true,
+        "audit_approval_required": true,
+        "silent_change": "FORBIDDEN"
+    },
+    "final_statement": "Override audit logs record human responsibility, not system intelligence. Any override without this log is non-compliant by definition."
+}

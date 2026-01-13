@@ -1,0 +1,115 @@
+# model/income_approach/rental_assumption.yaml
+# GOVERNANCE LOCKED – STATIC ASSUMPTION POLICY
+# Any change requires version bump & written rationale
+
+version: v1.0.0
+status: ACTIVE
+governance_role: INCOME_ASSUMPTION_REFERENCE
+decision_authority: NONE
+
+description: >
+  Static rental assumptions used as descriptive reference
+  for Income Approach projection. This file does NOT compute
+  income, value, yield, or approval decisions.
+
+applicability:
+  allowed_asset_types:
+    - RENTAL
+    - COMMERCIAL
+    - MIXED_USE
+  excluded_asset_types:
+    - OWNER_OCCUPIED_ONLY
+    - AGRICULTURAL
+    - INDUSTRIAL_SPECIAL_USE
+
+assumption_principles:
+  - ASSUMPTIONS_ARE_NOT_FACTS
+  - DESCRIPTIVE_NOT_PRESCRIPTIVE
+  - HUMAN_REVIEW_ALWAYS_REQUIRED
+  - NO_AUTOMATIC_INCOME_PROJECTION
+  - NO_MARKET_OPTIMIZATION
+
+rental_assumptions:
+  occupancy_rate:
+    description: >
+      Reference occupancy assumption used ONLY when
+      declared occupancy data is missing.
+    type: RANGE_REFERENCE
+    min: 0.6
+    max: 0.95
+    default_reference: 0.85
+    governance_notes:
+      - NOT_A_FORECAST
+      - NOT_USED_IF_ACTUAL_DATA_PRESENT
+
+  vacancy_rate:
+    description: >
+      Vacancy assumption derived from static policy bounds.
+    type: COMPLEMENTARY_REFERENCE
+    derived_from: occupancy_rate
+    governance_notes:
+      - ARITHMETIC_COMPLEMENT_ONLY
+      - NO_MARKET_INFERENCE
+
+  rental_growth_rate:
+    description: >
+      Long-term nominal rental growth reference.
+    type: STATIC_REFERENCE
+    value: 0.03
+    governance_notes:
+      - NOT_SHORT_TERM_FORECAST
+      - NOT_MARKET_TIMING_SIGNAL
+
+  expense_ratio:
+    description: >
+      Operating expense ratio reference (OPEX / Gross Income).
+    type: RANGE_REFERENCE
+    min: 0.25
+    max: 0.45
+    default_reference: 0.35
+    governance_notes:
+      - DESCRIPTIVE_ONLY
+      - NOT_EFFICIENCY_JUDGMENT
+
+  management_fee_ratio:
+    description: >
+      Reference property management fee ratio.
+    type: RANGE_REFERENCE
+    min: 0.05
+    max: 0.1
+    default_reference: 0.08
+    governance_notes:
+      - MAY_NOT_APPLY_TO_SELF_MANAGED
+      - HUMAN_OVERRIDE_ALLOWED
+
+  maintenance_reserve_ratio:
+    description: >
+      Annual maintenance reserve assumption.
+    type: STATIC_REFERENCE
+    value: 0.05
+    governance_notes:
+      - NOT_CAPEX_FORECAST
+      - NOT_CONDITION_ASSESSMENT
+
+data_usage_constraints:
+  - ASSUMPTIONS_MUST_NOT_OVERRIDE_DECLARED_DATA
+  - ASSUMPTIONS_MUST_BE_LOGGED_IN_DOSSIER
+  - ASSUMPTIONS_CANNOT_TRIGGER_APPROVAL
+  - ASSUMPTIONS_CANNOT_ADJUST_RISK_BAND
+
+audit_requirements:
+  - version
+  - content_hash
+  - valuation_hash_reference
+  - human_acknowledgement_required
+
+change_management:
+  version_bump_required: true
+  rationale_required: true
+  risk_assessment_required: true
+  silent_change_forbidden: true
+
+legal_disclaimer: >
+  Rental assumptions are generalized references intended to
+  support professional judgment. They do not represent
+  guaranteed performance, market forecasts, or investment advice.

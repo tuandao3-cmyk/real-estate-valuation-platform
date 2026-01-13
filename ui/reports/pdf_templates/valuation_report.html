@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BÁO CÁO KẾT QUẢ ĐỊNH GIÁ BẤT ĐỘNG SẢN</title>
+
+    <style>
+      body {
+        font-family: "Times New Roman", serif;
+        font-size: 12pt;
+        color: #000;
+        line-height: 1.5;
+      }
+
+      h1,
+      h2,
+      h3 {
+        text-align: center;
+        margin-bottom: 8px;
+      }
+
+      h1 {
+        font-size: 18pt;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        font-size: 14pt;
+      }
+
+      h3 {
+        font-size: 12pt;
+        text-align: left;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 16px;
+      }
+
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 6px 8px;
+        vertical-align: top;
+      }
+
+      th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+        text-align: left;
+      }
+
+      .no-border td {
+        border: none;
+        padding: 4px 0;
+      }
+
+      .section {
+        margin-top: 20px;
+      }
+
+      .disclaimer {
+        font-size: 10pt;
+        font-style: italic;
+        margin-top: 12px;
+      }
+
+      .signature-box {
+        margin-top: 40px;
+        width: 100%;
+      }
+
+      .signature {
+        width: 45%;
+        display: inline-block;
+        vertical-align: top;
+      }
+
+      .right {
+        float: right;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ========================= -->
+    <!-- HEADER -->
+    <!-- ========================= -->
+
+    <h1>BÁO CÁO KẾT QUẢ ĐỊNH GIÁ</h1>
+    <h2>(Hệ thống hỗ trợ định giá – Hybrid AVM)</h2>
+
+    <table class="no-border">
+      <tr>
+        <td><strong>Mã hồ sơ định giá:</strong> {{ valuation_id }}</td>
+        <td><strong>Ngày báo cáo:</strong> {{ report_date }}</td>
+      </tr>
+      <tr>
+        <td><strong>Người lập báo cáo:</strong> {{ report_prepared_by }}</td>
+        <td><strong>Vai trò:</strong> {{ prepared_role }}</td>
+      </tr>
+    </table>
+
+    <!-- ========================= -->
+    <!-- SECTION 1: PROPERTY INFO -->
+    <!-- ========================= -->
+
+    <div class="section">
+      <h3>1. Thông tin tài sản</h3>
+
+      <table>
+        <tr>
+          <th>Địa chỉ</th>
+          <td>{{ property_address }}</td>
+        </tr>
+        <tr>
+          <th>Loại tài sản</th>
+          <td>{{ property_type }}</td>
+        </tr>
+        <tr>
+          <th>Diện tích đất (m²)</th>
+          <td>{{ land_area }}</td>
+        </tr>
+        <tr>
+          <th>Diện tích xây dựng (m²)</th>
+          <td>{{ built_area }}</td>
+        </tr>
+        <tr>
+          <th>Mục đích định giá</th>
+          <td>{{ valuation_purpose }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- ========================= -->
+    <!-- SECTION 2: VALUATION RESULT -->
+    <!-- ========================= -->
+
+    <div class="section">
+      <h3>2. Kết quả định giá</h3>
+
+      <table>
+        <tr>
+          <th>Giá trị đề xuất</th>
+          <td><strong>{{ final_value }}</strong></td>
+        </tr>
+        <tr>
+          <th>Đơn vị tiền tệ</th>
+          <td>{{ currency }}</td>
+        </tr>
+        <tr>
+          <th>Khoảng giá tham chiếu</th>
+          <td>{{ value_range }}</td>
+        </tr>
+        <tr>
+          <th>Mức độ tin cậy</th>
+          <td>{{ confidence_level }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- ========================= -->
+    <!-- SECTION 3: METHODOLOGY -->
+    <!-- ========================= -->
+
+    <div class="section">
+      <h3>3. Phương pháp & mô hình sử dụng</h3>
+
+      <table>
+        <tr>
+          <th>Nhóm mô hình</th>
+          <th>Phiên bản</th>
+          <th>Vai trò</th>
+        </tr>
+        {% for model in models %}
+        <tr>
+          <td>{{ model.name }}</td>
+          <td>{{ model.version }}</td>
+          <td>{{ model.role }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <!-- ========================= -->
+    <!-- SECTION 4: LIMITATIONS -->
+    <!-- ========================= -->
+
+    <div class="section">
+      <h3>4. Giả định & giới hạn</h3>
+
+      <ul>
+        {% for limitation in limitations %}
+        <li>{{ limitation }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- ========================= -->
+    <!-- SECTION 5: RESPONSIBILITY -->
+    <!-- ========================= -->
+
+    <div class="section">
+      <h3>5. Trách nhiệm & tuyên bố</h3>
+
+      <p>
+        Hệ thống AI trong báo cáo này chỉ đóng vai trò hỗ trợ tổng hợp, tiêu
+        chuẩn hóa và trình bày thông tin. Giá trị định giá cuối cùng được xem
+        xét, phê duyệt và chịu trách nhiệm bởi con người có thẩm quyền.
+      </p>
+
+      <p class="disclaimer">
+        Báo cáo này không phải là chứng thư định giá độc lập theo quy định pháp
+        luật, trừ khi được ký và xác nhận bởi thẩm định viên được cấp phép.
+      </p>
+    </div>
+
+    <!-- ========================= -->
+    <!-- SIGNATURE -->
+    <!-- ========================= -->
+
+    <div class="signature-box">
+      <div class="signature">
+        <strong>Người lập báo cáo</strong><br /><br />
+        Ký, ghi rõ họ tên
+      </div>
+
+      <div class="signature right">
+        <strong>Người phê duyệt</strong><br /><br />
+        Ký, ghi rõ họ tên
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,1 +1,164 @@
 # YAML Config
+# MARKET STRESS TEST SCENARIO
+
+# Scenario ID: MARKET_CRASH_2008
+
+# Purpose: Kiểm tra độ ổn định hệ thống định giá trong điều kiện suy thoái nghiêm trọng
+
+# Context: Advanced AVM – Hybrid AI + Thẩm định thủ công
+
+# Nature: Kịch bản giả định phục vụ quản trị rủi ro mô hình
+
+---
+
+scenario_metadata:
+scenario_name: "Global Real Estate Market Crash – 2008-like"
+scenario_type: "Severe market downturn"
+reference_event: "Global Financial Crisis 2007–2009"
+geographic_scope: "Urban residential real estate – Vietnam context"
+severity_level: "High"
+regulatory_relevance:
+- "Model Risk Management"
+- "Stress Testing"
+- "Capital Adequacy Assessment"
+
+---
+
+scenario_objective:
+primary_objective:
+- "Đánh giá khả năng ổn định của kết quả định giá trong điều kiện thị trường suy thoái sâu"
+- "Xác định mức độ nhạy cảm của mô hình định giá với cú sốc thanh khoản và giá"
+secondary_objective:
+- "Kiểm tra cơ chế cảnh báo và escalation"
+- "Đánh giá vai trò kiểm soát của lớp thẩm định thủ công"
+
+---
+
+macroeconomic_assumptions:
+economic_growth:
+description: "Suy giảm tăng trưởng kinh tế nghiêm trọng"
+assumption:
+- "GDP tăng trưởng âm trong nhiều quý liên tiếp"
+- "Thu nhập hộ gia đình giảm"
+
+credit_conditions:
+description: "Thắt chặt tín dụng trên diện rộng"
+assumption:
+- "Ngân hàng siết chặt điều kiện cho vay"
+- "Lãi suất thực tăng"
+- "Khả năng tiếp cận tín dụng bất động sản suy giảm"
+
+employment:
+description: "Thị trường lao động suy yếu"
+assumption:
+- "Tỷ lệ thất nghiệp tăng"
+- "Thu nhập không ổn định"
+
+---
+
+real_estate_market_assumptions:
+transaction_volume:
+description: "Sụt giảm mạnh số lượng giao dịch"
+assumption:
+- "Khối lượng giao dịch giảm 40–60%"
+- "Thời gian chào bán kéo dài đáng kể"
+
+price_dynamics:
+description: "Giá bất động sản điều chỉnh giảm"
+assumption:
+- "Giá giao dịch giảm 20–40% tùy phân khúc"
+- "Biến động giá tăng mạnh"
+
+liquidity:
+description: "Thanh khoản thị trường suy giảm"
+assumption:
+- "Khó tìm tài sản so sánh phù hợp"
+- "Chênh lệch giá chào – giá giao dịch tăng"
+
+---
+
+data_environment_assumptions:
+transaction_data:
+description: "Dữ liệu giao dịch trở nên khan hiếm và trễ"
+assumption:
+- "Số lượng giao dịch đủ điều kiện giảm"
+- "Độ trễ cập nhật dữ liệu tăng"
+
+listing_data:
+description: "Dữ liệu chào bán kém tin cậy hơn"
+assumption:
+- "Giá chào không phản ánh giá thực"
+- "Tăng hiện tượng rút tin / hủy giao dịch"
+
+---
+
+model_behavior_expectations:
+avm_core_models:
+expected_behavior:
+- "Độ phân tán kết quả giữa các mô hình tăng"
+- "Sai lệch giữa mô hình so sánh và mô hình chi phí rõ rệt"
+
+ensemble_layer:
+expected_behavior:
+- "Confidence score giảm"
+- "Tăng xác suất kích hoạt escalation"
+
+risk_models:
+expected_behavior:
+- "Liquidity risk score tăng"
+- "Volatility index vượt ngưỡng cảnh báo"
+
+---
+
+governance_and_control_expectations:
+approval_workflow:
+expectation:
+- "Tăng tỷ lệ hồ sơ yêu cầu thẩm định thủ công"
+- "Giảm số hồ sơ được chấp nhận tự động"
+
+override_policy:
+expectation:
+- "Override chỉ được thực hiện với lý do nghiệp vụ rõ ràng"
+- "Tăng cường maker–checker"
+
+llm_assistant:
+expectation:
+- "Chỉ hỗ trợ diễn giải rủi ro"
+- "Không đề xuất giá trị thay thế"
+
+---
+
+stress_test_use_cases:
+valuation_stability:
+description: "So sánh mức biến động giá trị định giá trước và sau cú sốc"
+
+model_limit_assessment:
+description: "Xác định phân khúc mà mô hình không còn phù hợp"
+
+manual_dependency:
+description: "Đánh giá mức độ phụ thuộc vào thẩm định viên trong khủng hoảng"
+
+---
+
+out_of_scope_notes:
+
+* "Kịch bản này không nhằm dự báo thị trường"
+* "Không sử dụng kết quả stress test cho quyết định tín dụng cụ thể"
+* "Không suy diễn độ chính xác của mô hình trong điều kiện bình thường"
+
+---
+
+documentation_and_audit:
+record_requirements:
+- "Lưu trữ đầy đủ giả định"
+- "Lưu kết quả stress test"
+- "Biên bản đánh giá của khối rủi ro"
+
+audit_usage:
+- "Phục vụ kiểm toán mô hình"
+- "Phục vụ đánh giá ICAAP / ILAAP (nếu áp dụng)"
+
+---
+
+conclusion_statement:
+statement: "Kịch bản Market Crash 2008-like nhằm kiểm tra khả năng chịu đựng và cơ chế kiểm soát của hệ thống định giá trong điều kiện bất lợi nghiêm trọng, không nhằm khẳng định độ chính xác hay khả năng dự báo của bất kỳ mô hình nào."
